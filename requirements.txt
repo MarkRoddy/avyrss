@@ -1,0 +1,16 @@
+# Web Framework
+Flask==3.1.0
+Werkzeug==3.1.3
+
+# Configuration
+python-dotenv==1.0.1
+PyYAML==6.0.2
+
+# HTTP Requests
+requests==2.32.3
+
+# RSS Feed Generation
+feedgen==1.0.0
+
+# Templating (included with Flask, but listed for clarity)
+Jinja2==3.1.4

@@ -1,1 +1,28 @@
+# Reference repository
 avymail
+
+# Virtual Environment
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Environment variables
+.env
+
+# Forecasts and feeds (generated content, not in source control)
+forecasts/
+feeds/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db

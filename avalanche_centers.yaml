@@ -1,0 +1,228 @@
+avalanche_centers:
+  bridger-teton-avalanche-center:
+    name: Bridger-Teton Avalanche Center
+    id: BTAC
+    zones:
+    - name: Salt River and Wyoming Ranges
+      slug: salt-river-and-wyoming-ranges
+      id: 2856
+    - name: Snake River Range
+      slug: snake-river-range
+      id: 2860
+    - name: Tetons
+      slug: tetons
+      id: 2855
+    - name: Togwotee Pass
+      slug: togwotee-pass
+      id: 2852
+  central-oregon-avalanche-center:
+    name: Central Oregon Avalanche Center
+    id: COAA
+    zones:
+    - name: Central Cascades
+      slug: central-cascades
+      id: 2470
+    - name: Newberry
+      slug: newberry
+      id: 2471
+  chugach-national-forest-avalanche-center:
+    name: Chugach National Forest Avalanche Center
+    id: CNFAIC
+    zones:
+    - name: Chugach State Park
+      slug: chugach-state-park
+      id: 2818
+    - name: Seward and Lost Lake
+      slug: seward-and-lost-lake
+      id: 2817
+    - name: Summit Lake
+      slug: summit-lake
+      id: 2816
+    - name: Turnagain Pass and Girdwood
+      slug: turnagain-pass-and-girdwood
+      id: 2815
+  colorado-avalanche-information-center:
+    name: Colorado Avalanche Information Center
+    id: CAIC
+    zones:
+    - name: CAIC zone
+      slug: caic-zone
+      id: 2660
+    - name: CAIC zone
+      slug: caic-zone
+      id: 2755
+    - name: CAIC zone
+      slug: caic-zone
+      id: 2754
+    - name: CAIC zone
+      slug: caic-zone
+      id: 2745
+    - name: CAIC zone
+      slug: caic-zone
+      id: 2690
+    - name: CAIC zone
+      slug: caic-zone
+      id: 2730
+    - name: CAIC zone
+      slug: caic-zone
+      id: 2697
+    - name: CAIC zone
+      slug: caic-zone
+      id: 2747
+  flathead-avalanche-center:
+    name: Flathead Avalanche Center
+    id: FAC
+    zones:
+    - name: Flathead Range & Glacier NP
+      slug: flathead-range-glacier-np
+      id: 1735
+    - name: Swan Range
+      slug: swan-range
+      id: 1734
+    - name: Whitefish Range
+      slug: whitefish-range
+      id: 1733
+  hatcher-pass-avalanche-center:
+    name: Hatcher Pass Avalanche Center
+    id: HPAC
+    zones:
+    - name: Hatcher Pass
+      slug: hatcher-pass
+      id: 2152
+  idaho-panhandle-avalanche-center:
+    name: Idaho Panhandle Avalanche Center
+    id: IPAC
+    zones:
+    - name: East Cabinet Mountains
+      slug: east-cabinet-mountains
+      id: 1901
+    - name: Purcell Mountains
+      slug: purcell-mountains
+      id: 1903
+    - name: Selkirk Mountains
+      slug: selkirk-mountains
+      id: 1899
+    - name: Silver Valley & Bitterroot Mountains
+      slug: silver-valley-bitterroot-mountains
+      id: 1902
+    - name: West Cabinet Mountains
+      slug: west-cabinet-mountains
+      id: 1900
+  mount-washington-avalanche-center:
+    name: Mount Washington Avalanche Center
+    id: MWAC
+    zones:
+    - name: Presidential Range
+      slug: presidential-range
+      id: 2355
+  northwest-avalanche-center:
+    name: Northwest Avalanche Center
+    id: NWAC
+    zones:
+    - name: East Slopes Central
+      slug: east-slopes-central
+      id: 1655
+    - name: East Slopes North
+      slug: east-slopes-north
+      id: 1654
+    - name: East Slopes South
+      slug: east-slopes-south
+      id: 1656
+    - name: Mt Hood
+      slug: mt-hood
+      id: 1657
+    - name: Olympics
+      slug: olympics
+      id: 1645
+    - name: Snoqualmie Pass
+      slug: snoqualmie-pass
+      id: 1653
+    - name: Stevens Pass
+      slug: stevens-pass
+      id: 1649
+    - name: West Slopes Central
+      slug: west-slopes-central
+      id: 1647
+    - name: West Slopes North
+      slug: west-slopes-north
+      id: 1646
+    - name: West Slopes South
+      slug: west-slopes-south
+      id: 1648
+  payette-avalanche-center:
+    name: Payette Avalanche Center
+    id: PAC
+    zones:
+    - name: Salmon River Mountains
+      slug: salmon-river-mountains
+      id: 2897
+    - name: West Mountains
+      slug: west-mountains
+      id: 2898
+  sawtooth-avalanche-center:
+    name: Sawtooth Avalanche Center
+    id: SNFAC
+    zones:
+    - name: Banner Summit
+      slug: banner-summit
+      id: 2907
+    - name: Galena Summit & Eastern Mtns
+      slug: galena-summit-eastern-mtns
+      id: 2904
+    - name: Sawtooth & Western Smoky Mtns
+      slug: sawtooth-western-smoky-mtns
+      id: 2906
+    - name: Soldier & Wood River Valley Mtns
+      slug: soldier-wood-river-valley-mtns
+      id: 2905
+  sierra-avalanche-center:
+    name: Sierra Avalanche Center
+    id: SAC
+    zones:
+    - name: Central Sierra Nevada
+      slug: central-sierra-nevada
+      id: 2458
+  utah-avalanche-center:
+    name: Utah Avalanche Center
+    id: UAC
+    zones:
+    - name: Abajos
+      slug: abajos
+      id: 1744
+    - name: Logan
+      slug: logan
+      id: 1736
+    - name: Moab
+      slug: moab
+      id: 1742
+    - name: Ogden
+      slug: ogden
+      id: 1737
+    - name: Provo
+      slug: provo
+      id: 1739
+    - name: Salt Lake
+      slug: salt-lake
+      id: 1738
+    - name: Skyline
+      slug: skyline
+      id: 1741
+    - name: Southwest
+      slug: southwest
+      id: 1743
+    - name: Uintas
+      slug: uintas
+      id: 1740
+  valdez-avalanche-center:
+    name: Valdez Avalanche Center
+    id: VAC
+    zones:
+    - name: Continental
+      slug: continental
+      id: 1611
+    - name: Intermountain
+      slug: intermountain
+      id: 1610
+    - name: Maritime
+      slug: maritime
+      id: 1609

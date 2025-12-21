@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AvyRss - Avalanche Forecast RSS Feeds</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .intro {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        .intro p {
+            margin-bottom: 10px;
+        }
+
+        .intro p:last-child {
+            margin-bottom: 0;
+        }
+
+        .center {
+            margin-bottom: 40px;
+        }
+
+        .center h2 {
+            color: #34495e;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .zones {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .zone-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 15px;
+            transition: all 0.2s;
+        }
+
+        .zone-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-color: #3498db;
+        }
+
+        .zone-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .rss-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #3498db;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        .rss-link:hover {
+            text-decoration: underline;
+        }
+
+        .rss-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .stats {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AvyRss</h1>
+        <p class="subtitle">Avalanche Forecast RSS Feeds</p>
+
+        <div class="intro">
+            <p><strong>Stay informed about backcountry conditions.</strong></p>
+            <p>Subscribe to avalanche forecasts from your favorite zones using your preferred RSS feed reader.</p>
+            <p>Each feed includes the latest 10 forecasts with bottom-line summaries and links to full details.</p>
+        </div>
+
+        <div class="stats">
+            14 Avalanche Centers • 57 Zones
+        </div>
+
+        
+        <div class="center">
+            <h2>Bridger-Teton Avalanche Center</h2>
+            <div class="zones">
+                
+                <div class="zone-card">
+                    <div class="zone-name">Salt River and Wyoming Ranges</div>
+                    <a href="http://localhost:5000/feed/bridger-teton-avalanche-center/salt-river-and-wyoming-ranges"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Snake River Range</div>
+                    <a href="http://localhost:5000/feed/bridger-teton-avalanche-center/snake-river-range"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Tetons</div>
+                    <a href="http://localhost:5000/feed/bridger-teton-avalanche-center/tetons"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Togwotee Pass</div>
+                    <a href="http://localhost:5000/feed/bridger-teton-avalanche-center/togwotee-pass"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="center">
+            <h2>Central Oregon Avalanche Center</h2>
+            <div class="zones">
+                
+                <div class="zone-card">
+                    <div class="zone-name">Central Cascades</div>
+                    <a href="http://localhost:5000/feed/central-oregon-avalanche-center/central-cascades"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Newberry</div>
+                    <a href="http://localhost:5000/feed/central-oregon-avalanche-center/newberry"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="center">
+            <h2>Chugach National Forest Avalanche Center</h2>
+            <div class="zones">
+                
+                <div class="zone-card">
+                    <div class="zone-name">Chugach State Park</div>
+                    <a href="http://localhost:5000/feed/chugach-national-forest-avalanche-center/chugach-state-park"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Seward and Lost Lake</div>
+                    <a href="http://localhost:5000/feed/chugach-national-forest-avalanche-center/seward-and-lost-lake"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Summit Lake</div>
+                    <a href="http://localhost:5000/feed/chugach-national-forest-avalanche-center/summit-lake"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Turnagain Pass and Girdwood</div>
+                    <a href="http://localhost:5000/feed/chugach-national-forest-avalanche-center/turnagain-pass-and-girdwood"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="center">
+            <h2>Colorado Avalanche Information Center</h2>
+            <div class="zones">
+                
+                <div class="zone-card">
+                    <div class="zone-name">CAIC zone</div>
+                    <a href="http://localhost:5000/feed/colorado-avalanche-information-center/caic-zone"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">CAIC zone</div>
+                    <a href="http://localhost:5000/feed/colorado-avalanche-information-center/caic-zone"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">CAIC zone</div>
+                    <a href="http://localhost:5000/feed/colorado-avalanche-information-center/caic-zone"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">CAIC zone</div>
+                    <a href="http://localhost:5000/feed/colorado-avalanche-information-center/caic-zone"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">CAIC zone</div>
+                    <a href="http://localhost:5000/feed/colorado-avalanche-information-center/caic-zone"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">CAIC zone</div>
+                    <a href="http://localhost:5000/feed/colorado-avalanche-information-center/caic-zone"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">CAIC zone</div>
+                    <a href="http://localhost:5000/feed/colorado-avalanche-information-center/caic-zone"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">CAIC zone</div>
+                    <a href="http://localhost:5000/feed/colorado-avalanche-information-center/caic-zone"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="center">
+            <h2>Flathead Avalanche Center</h2>
+            <div class="zones">
+                
+                <div class="zone-card">
+                    <div class="zone-name">Flathead Range & Glacier NP</div>
+                    <a href="http://localhost:5000/feed/flathead-avalanche-center/flathead-range-glacier-np"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Swan Range</div>
+                    <a href="http://localhost:5000/feed/flathead-avalanche-center/swan-range"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Whitefish Range</div>
+                    <a href="http://localhost:5000/feed/flathead-avalanche-center/whitefish-range"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="center">
+            <h2>Hatcher Pass Avalanche Center</h2>
+            <div class="zones">
+                
+                <div class="zone-card">
+                    <div class="zone-name">Hatcher Pass</div>
+                    <a href="http://localhost:5000/feed/hatcher-pass-avalanche-center/hatcher-pass"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="center">
+            <h2>Idaho Panhandle Avalanche Center</h2>
+            <div class="zones">
+                
+                <div class="zone-card">
+                    <div class="zone-name">East Cabinet Mountains</div>
+                    <a href="http://localhost:5000/feed/idaho-panhandle-avalanche-center/east-cabinet-mountains"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Purcell Mountains</div>
+                    <a href="http://localhost:5000/feed/idaho-panhandle-avalanche-center/purcell-mountains"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Selkirk Mountains</div>
+                    <a href="http://localhost:5000/feed/idaho-panhandle-avalanche-center/selkirk-mountains"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Silver Valley & Bitterroot Mountains</div>
+                    <a href="http://localhost:5000/feed/idaho-panhandle-avalanche-center/silver-valley-bitterroot-mountains"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">West Cabinet Mountains</div>
+                    <a href="http://localhost:5000/feed/idaho-panhandle-avalanche-center/west-cabinet-mountains"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="center">
+            <h2>Mount Washington Avalanche Center</h2>
+            <div class="zones">
+                
+                <div class="zone-card">
+                    <div class="zone-name">Presidential Range</div>
+                    <a href="http://localhost:5000/feed/mount-washington-avalanche-center/presidential-range"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="center">
+            <h2>Northwest Avalanche Center</h2>
+            <div class="zones">
+                
+                <div class="zone-card">
+                    <div class="zone-name">East Slopes Central</div>
+                    <a href="http://localhost:5000/feed/northwest-avalanche-center/east-slopes-central"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">East Slopes North</div>
+                    <a href="http://localhost:5000/feed/northwest-avalanche-center/east-slopes-north"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">East Slopes South</div>
+                    <a href="http://localhost:5000/feed/northwest-avalanche-center/east-slopes-south"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Mt Hood</div>
+                    <a href="http://localhost:5000/feed/northwest-avalanche-center/mt-hood"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Olympics</div>
+                    <a href="http://localhost:5000/feed/northwest-avalanche-center/olympics"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Snoqualmie Pass</div>
+                    <a href="http://localhost:5000/feed/northwest-avalanche-center/snoqualmie-pass"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Stevens Pass</div>
+                    <a href="http://localhost:5000/feed/northwest-avalanche-center/stevens-pass"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">West Slopes Central</div>
+                    <a href="http://localhost:5000/feed/northwest-avalanche-center/west-slopes-central"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">West Slopes North</div>
+                    <a href="http://localhost:5000/feed/northwest-avalanche-center/west-slopes-north"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">West Slopes South</div>
+                    <a href="http://localhost:5000/feed/northwest-avalanche-center/west-slopes-south"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="center">
+            <h2>Payette Avalanche Center</h2>
+            <div class="zones">
+                
+                <div class="zone-card">
+                    <div class="zone-name">Salmon River Mountains</div>
+                    <a href="http://localhost:5000/feed/payette-avalanche-center/salmon-river-mountains"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">West Mountains</div>
+                    <a href="http://localhost:5000/feed/payette-avalanche-center/west-mountains"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="center">
+            <h2>Sawtooth Avalanche Center</h2>
+            <div class="zones">
+                
+                <div class="zone-card">
+                    <div class="zone-name">Banner Summit</div>
+                    <a href="http://localhost:5000/feed/sawtooth-avalanche-center/banner-summit"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Galena Summit & Eastern Mtns</div>
+                    <a href="http://localhost:5000/feed/sawtooth-avalanche-center/galena-summit-eastern-mtns"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Sawtooth & Western Smoky Mtns</div>
+                    <a href="http://localhost:5000/feed/sawtooth-avalanche-center/sawtooth-western-smoky-mtns"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Soldier & Wood River Valley Mtns</div>
+                    <a href="http://localhost:5000/feed/sawtooth-avalanche-center/soldier-wood-river-valley-mtns"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="center">
+            <h2>Sierra Avalanche Center</h2>
+            <div class="zones">
+                
+                <div class="zone-card">
+                    <div class="zone-name">Central Sierra Nevada</div>
+                    <a href="http://localhost:5000/feed/sierra-avalanche-center/central-sierra-nevada"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="center">
+            <h2>Utah Avalanche Center</h2>
+            <div class="zones">
+                
+                <div class="zone-card">
+                    <div class="zone-name">Abajos</div>
+                    <a href="http://localhost:5000/feed/utah-avalanche-center/abajos"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Logan</div>
+                    <a href="http://localhost:5000/feed/utah-avalanche-center/logan"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Moab</div>
+                    <a href="http://localhost:5000/feed/utah-avalanche-center/moab"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Ogden</div>
+                    <a href="http://localhost:5000/feed/utah-avalanche-center/ogden"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Provo</div>
+                    <a href="http://localhost:5000/feed/utah-avalanche-center/provo"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Salt Lake</div>
+                    <a href="http://localhost:5000/feed/utah-avalanche-center/salt-lake"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Skyline</div>
+                    <a href="http://localhost:5000/feed/utah-avalanche-center/skyline"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Southwest</div>
+                    <a href="http://localhost:5000/feed/utah-avalanche-center/southwest"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Uintas</div>
+                    <a href="http://localhost:5000/feed/utah-avalanche-center/uintas"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="center">
+            <h2>Valdez Avalanche Center</h2>
+            <div class="zones">
+                
+                <div class="zone-card">
+                    <div class="zone-name">Continental</div>
+                    <a href="http://localhost:5000/feed/valdez-avalanche-center/continental"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Intermountain</div>
+                    <a href="http://localhost:5000/feed/valdez-avalanche-center/intermountain"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+                <div class="zone-card">
+                    <div class="zone-name">Maritime</div>
+                    <a href="http://localhost:5000/feed/valdez-avalanche-center/maritime"
+                       class="rss-link">
+                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                        </svg>
+                        Subscribe to RSS Feed
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+        
+
+        <footer>
+            <p>Data provided by <a href="https://avalanche.org" target="_blank">avalanche.org</a></p>
+            <p>Generated on 2025-12-21 17:06:08 UTC</p>
+        </footer>
+    </div>
+</body>
+</html>
