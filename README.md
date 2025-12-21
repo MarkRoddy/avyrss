@@ -282,12 +282,6 @@ See [FUTURE.md](FUTURE.md) for planned enhancements:
 - Expanded HTML content for RSS feed entries
 - Migration to S3 storage for forecasts and feeds
 
-## Contributing
-
-This project follows a structured development approach:
-- See [ARCHITECTURE.md](ARCHITECTURE.md) for architectural decisions
-- See [TECHNICAL.md](TECHNICAL.md) for technical preferences
-- See [TASKS.md](TASKS.md) for the development task breakdown
 
 ## License
 
