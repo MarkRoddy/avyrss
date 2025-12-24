@@ -111,9 +111,9 @@ AvyRSS uses an offline generation model: forecasts are downloaded and stored as 
 
 ## License
 
-[Add license information]
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
 - Forecast data provided by [avalanche.org](https://avalanche.org)
-- Inspired by [avymail](https://github.com/username/avymail)
+- Thanks to [avymail](https://github.com/acannistra/avymail) for inspiration.
