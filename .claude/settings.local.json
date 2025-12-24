@@ -8,7 +8,8 @@
       "Bash(ls:*)",
       "Bash(chmod:*)",
       "Bash(curl:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(xargs cat:*)"
     ]
   }
 }

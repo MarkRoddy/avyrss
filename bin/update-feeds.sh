@@ -136,7 +136,10 @@ fi
 log_info "Running full update (downloading forecasts and generating feeds)..."
 log_info "This may take a few minutes..."
 
-if python3 bin/manage.py full-update; then
+# Use AVYRSS_BASE_URL environment variable if set, otherwise default to http://www.avyrss.com
+BASE_URL="${AVYRSS_BASE_URL:-https://www.avyrss.com}"
+
+if python3 bin/manage.py full-update --base-url "$BASE_URL"; then
     log_info "✓ Successfully completed full update"
 else
     log_error "Failed to complete full update"

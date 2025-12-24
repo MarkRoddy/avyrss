@@ -162,7 +162,9 @@ def generate_rss_feed(
             description_html = '\n'.join(description_parts)
             fe.description(description_html)
 
-            # Add link
+            # Add link to the forecast page
+            # This is the primary link that feed readers should use for the entry title
+            # Only add a link if we have a valid forecast URL
             if info['url']:
                 fe.link(href=info['url'])
 
