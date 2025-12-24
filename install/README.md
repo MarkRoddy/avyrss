@@ -112,18 +112,6 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-### 5. Set Up SSL (Recommended)
-
-```bash
-# Install certbot if not already installed
-sudo apt install certbot python3-certbot-nginx
-
-# Obtain and install SSL certificate
-sudo certbot --nginx -d avyrss.com -d www.avyrss.com
-
-# Certbot will automatically modify nginx.conf to add SSL
-```
-
 ## Update Schedule
 
 The systemd timer runs every 6 hours at fixed UTC times:
@@ -303,7 +291,6 @@ sudo nginx -t && sudo systemctl reload nginx
 
 - RSS feeds and index.html are public by design (world-readable is fine)
 - Sensitive files (.git, .env, venv/, bin/) are blocked by nginx config
-- SSL/HTTPS is strongly recommended (use certbot)
 - The update script is fetched from GitHub main branch each time it runs
 - Dedicated avyrss user runs updates (separation of concerns)
 - www-data user stays locked down (no shell required)

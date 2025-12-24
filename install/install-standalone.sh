@@ -41,26 +41,6 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-prompt_yes_no() {
-    local prompt="$1"
-    local default="${2:-n}"
-
-    if [ "$default" = "y" ]; then
-        prompt="$prompt [Y/n]: "
-    else
-        prompt="$prompt [y/N]: "
-    fi
-
-    read -p "$prompt" response
-    response=${response:-$default}
-
-    if [[ "$response" =~ ^[Yy]$ ]]; then
-        return 0
-    else
-        return 1
-    fi
-}
-
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
     log_error "This script must be run as root (use sudo)"
@@ -82,15 +62,8 @@ log_info "Base directory: $BASE_DIR"
 log_info "Domain: $NGINX_SITE"
 echo ""
 
-if ! prompt_yes_no "Continue with installation?" "y"; then
-    log_info "Installation cancelled"
-    exit 0
-fi
-
-echo ""
-
 # Step 1: Check prerequisites
-log_step "Step 1/6: Checking prerequisites..."
+log_step "Step 1/5: Checking prerequisites..."
 
 # Check for required commands
 MISSING_COMMANDS=()
@@ -157,7 +130,7 @@ log_info "✓ Base directory exists: $BASE_DIR"
 echo ""
 
 # Step 2: Set up log file
-log_step "Step 2/6: Setting up log file..."
+log_step "Step 2/5: Setting up log file..."
 
 if [ ! -f "$LOG_FILE" ]; then
     touch "$LOG_FILE"
@@ -172,7 +145,7 @@ log_info "✓ Log file configured: $LOG_FILE"
 echo ""
 
 # Step 3: Install systemd timer and service
-log_step "Step 3/6: Installing systemd timer and service..."
+log_step "Step 3/5: Installing systemd timer and service..."
 
 # Create systemd timer file
 log_info "Creating systemd timer..."
@@ -281,49 +254,44 @@ log_info "  • 9pm UTC  - 1pm PST / 2pm PDT"
 echo ""
 
 # Step 4: Run initial update
-log_step "Step 4/6: Running initial update (this may take a few minutes)..."
+log_step "Step 4/5: Running initial update (this may take a few minutes)..."
 
-log_info "This will clone the repository and generate initial RSS feeds"
+log_info "Cloning repository and generating initial RSS feeds..."
 
-if prompt_yes_no "Run initial update now?" "y"; then
-    sudo -u avyrss bash -c "curl -fsSL https://raw.githubusercontent.com/MarkRoddy/avyrss/refs/heads/main/bin/update-feeds.sh | bash -s -- $BASE_DIR" 2>&1 | tee -a "$LOG_FILE"
+sudo -u avyrss bash -c "curl -fsSL https://raw.githubusercontent.com/MarkRoddy/avyrss/refs/heads/main/bin/update-feeds.sh | bash -s -- $BASE_DIR" 2>&1 | tee -a "$LOG_FILE"
 
-    if [ ${PIPESTATUS[0]} -eq 0 ]; then
-        log_info "✓ Initial update completed successfully"
+if [ ${PIPESTATUS[0]} -eq 0 ]; then
+    log_info "✓ Initial update completed successfully"
 
-        # Set up group permissions with setgid for future updates
-        if [ -d "$BASE_DIR/avyrss/forecasts" ]; then
-            chown -R avyrss:www-data "$BASE_DIR/avyrss/forecasts"
-            chmod -R g+w "$BASE_DIR/avyrss/forecasts"
-            chmod g+s "$BASE_DIR/avyrss/forecasts"
-            log_info "✓ Set group permissions on forecasts/"
-        fi
+    # Set up group permissions with setgid for future updates
+    if [ -d "$BASE_DIR/avyrss/forecasts" ]; then
+        chown -R avyrss:www-data "$BASE_DIR/avyrss/forecasts"
+        chmod -R g+w "$BASE_DIR/avyrss/forecasts"
+        chmod g+s "$BASE_DIR/avyrss/forecasts"
+        log_info "✓ Set group permissions on forecasts/"
+    fi
 
-        if [ -d "$BASE_DIR/avyrss/feeds" ]; then
-            chown -R avyrss:www-data "$BASE_DIR/avyrss/feeds"
-            chmod -R g+w "$BASE_DIR/avyrss/feeds"
-            chmod g+s "$BASE_DIR/avyrss/feeds"
-            log_info "✓ Set group permissions on feeds/"
-        fi
+    if [ -d "$BASE_DIR/avyrss/feeds" ]; then
+        chown -R avyrss:www-data "$BASE_DIR/avyrss/feeds"
+        chmod -R g+w "$BASE_DIR/avyrss/feeds"
+        chmod g+s "$BASE_DIR/avyrss/feeds"
+        log_info "✓ Set group permissions on feeds/"
+    fi
 
-        if [ -f "$BASE_DIR/avyrss/index.html" ]; then
-            chown avyrss:www-data "$BASE_DIR/avyrss/index.html"
-            chmod g+w "$BASE_DIR/avyrss/index.html"
-            log_info "✓ Set group permissions on index.html"
-        fi
-    else
-        log_error "Initial update failed - check $LOG_FILE for details"
-        exit 1
+    if [ -f "$BASE_DIR/avyrss/index.html" ]; then
+        chown avyrss:www-data "$BASE_DIR/avyrss/index.html"
+        chmod g+w "$BASE_DIR/avyrss/index.html"
+        log_info "✓ Set group permissions on index.html"
     fi
 else
-    log_warn "Skipping initial update - you'll need to run it manually:"
-    log_warn "  sudo systemctl start avyrss-update.service"
+    log_error "Initial update failed - check $LOG_FILE for details"
+    exit 1
 fi
 
 echo ""
 
 # Step 5: Install nginx configuration
-log_step "Step 5/6: Installing nginx configuration..."
+log_step "Step 5/5: Installing nginx configuration..."
 
 # Create nginx config file
 log_info "Creating nginx configuration..."
@@ -408,9 +376,6 @@ server {
         deny all;
     }
 }
-
-# SSL Configuration (added by certbot)
-# After running certbot, SSL configuration will be appended here automatically
 EOF
 
 log_info "✓ Created nginx configuration at /etc/nginx/sites-available/$NGINX_SITE"
@@ -429,45 +394,12 @@ if nginx -t 2>&1; then
     log_info "✓ Nginx configuration is valid"
 
     # Reload nginx
-    if prompt_yes_no "Reload nginx now?" "y"; then
-        systemctl reload nginx
-        log_info "✓ Nginx reloaded"
-    else
-        log_warn "Remember to reload nginx: sudo systemctl reload nginx"
-    fi
+    systemctl reload nginx
+    log_info "✓ Nginx reloaded"
 else
     log_error "Nginx configuration test failed"
-    log_error "Fix the configuration and reload manually"
-fi
-
-echo ""
-
-# Step 6: SSL setup (optional)
-log_step "Step 6/6: SSL setup (optional)..."
-
-if command -v certbot &> /dev/null; then
-    log_info "Certbot is installed"
-
-    if prompt_yes_no "Set up SSL with certbot now?" "n"; then
-        log_info "Running certbot..."
-        certbot --nginx -d avyrss.com -d www.avyrss.com
-
-        if [ $? -eq 0 ]; then
-            log_info "✓ SSL certificate installed"
-        else
-            log_warn "Certbot failed - you can run it manually later"
-        fi
-    else
-        log_info "Skipping SSL setup"
-        log_info "You can set up SSL later with:"
-        log_info "  sudo certbot --nginx -d avyrss.com -d www.avyrss.com"
-    fi
-else
-    log_info "Certbot not installed - skipping SSL setup"
-    log_info "Install certbot later with:"
-    log_info "  sudo apt install certbot python3-certbot-nginx"
-    log_info "Then run:"
-    log_info "  sudo certbot --nginx -d avyrss.com -d www.avyrss.com"
+    log_error "Please check the nginx configuration"
+    exit 1
 fi
 
 echo ""
