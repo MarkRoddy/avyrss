@@ -366,6 +366,8 @@ cat > "/etc/nginx/sites-available/$NGINX_SITE" <<'EOF'
 server {
     listen 80;
     listen [::]:80;
+    listen 8000;
+    listen [::]:8000;
 
     server_name www.avyrss.com avyrss.com;
 
