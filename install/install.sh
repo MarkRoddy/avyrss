@@ -124,7 +124,14 @@ if [ ! -d "$BASE_DIR" ]; then
     mkdir -p "$BASE_DIR"
 fi
 
-log_info "✓ Base directory exists: $BASE_DIR"
+# Create and set ownership of avyrss directory for update script
+if [ ! -d "$BASE_DIR/avyrss" ]; then
+    log_info "Creating AvyRSS directory: $BASE_DIR/avyrss"
+    mkdir -p "$BASE_DIR/avyrss"
+fi
+
+chown -R avyrss:www-data "$BASE_DIR/avyrss"
+log_info "✓ Base directory configured: $BASE_DIR/avyrss"
 
 echo ""
 
