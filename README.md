@@ -276,9 +276,28 @@ pip install gunicorn
 gunicorn -w 4 -b 0.0.0.0:8000 app.main:app
 ```
 
+## Documentation
+
+### For Users
+- **[README.md](README.md)** (this file) - Overview, features, and basic usage
+- **[SETUP.md](SETUP.md)** - Complete setup guide from scratch
+
+### For Developers
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System design, data flow, critical rules
+- **[TECHNICAL.md](TECHNICAL.md)** - Coding standards, preferences, anti-patterns
+- **[DEVELOPMENT.md](DEVELOPMENT.md)** - Development workflow, debugging, common tasks
+- **[FUTURE.md](FUTURE.md)** - Planned enhancements and roadmap
+
+### Quick Links for AI Agents
+If you're an AI agent starting a new session:
+1. Read [ARCHITECTURE.md](ARCHITECTURE.md) first for critical rules
+2. Read [TECHNICAL.md](TECHNICAL.md) for coding standards
+3. Read [DEVELOPMENT.md](DEVELOPMENT.md) for workflow guidance
+4. Refer to [SETUP.md](SETUP.md) if troubleshooting setup issues
+
 ## Future Enhancements
 
-See [FUTURE.md](FUTURE.md) for planned enhancements:
+See [FUTURE.md](FUTURE.md) for detailed roadmap. Planned enhancements include:
 - Expanded HTML content for RSS feed entries
 - Migration to S3 storage for forecasts and feeds
 
