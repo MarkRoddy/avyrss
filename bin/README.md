@@ -19,6 +19,9 @@ python3 bin/manage.py download-forecast <center-slug> <zone-slug>
 # Generate single feed
 python3 bin/manage.py generate-feed <center-slug> <zone-slug>
 
+# Generate all feeds (without downloading new forecasts)
+python3 bin/manage.py generate-all-feeds
+
 # Generate index page
 python3 bin/manage.py generate-index
 

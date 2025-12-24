@@ -101,6 +101,38 @@ def cmd_generate_feed(args):
         sys.exit(1)
 
 
+def cmd_generate_all_feeds(args):
+    """Generate RSS feeds for all zones (without downloading new forecasts)."""
+    config = AvalancheConfig(args.config)
+
+    logger.info("Generating RSS feeds for all zones...")
+
+    feed_results = generate_all_feeds(
+        config,
+        base_url=args.base_url,
+        forecasts_dir=args.forecasts_dir,
+        feeds_dir=args.feeds_dir
+    )
+
+    # Summary
+    print("\n" + "=" * 50)
+    print("RSS Feed Generation Complete")
+    print("=" * 50)
+    total = feed_results['total']
+    successful = feed_results['successful']
+    failed = feed_results['failed']
+
+    print(f"Total zones: {total}")
+    print(f"✓ Successfully generated: {successful}")
+    print(f"✗ Failed: {failed}")
+
+    if failed > 0:
+        print("\nFailed zones:")
+        for center_slug, zone_slug in feed_results['failed_zones']:
+            print(f"  - {center_slug}/{zone_slug}")
+        sys.exit(1)
+
+
 def cmd_generate_index(args):
     """Generate the HTML index page."""
     config = AvalancheConfig(args.config)
@@ -135,6 +167,9 @@ Examples:
 
   # Generate RSS feed for a specific zone (without downloading new forecast)
   %(prog)s generate-feed northwest-avalanche-center snoqualmie-pass
+
+  # Generate RSS feeds for all zones (without downloading new forecasts)
+  %(prog)s generate-all-feeds
 
   # Generate the HTML index page
   %(prog)s generate-index
@@ -190,6 +225,13 @@ Examples:
     parser_gen_feed.add_argument('center', help='Avalanche center slug')
     parser_gen_feed.add_argument('zone', help='Zone slug')
     parser_gen_feed.set_defaults(func=cmd_generate_feed)
+
+    # generate-all-feeds command
+    parser_gen_all_feeds = subparsers.add_parser(
+        'generate-all-feeds',
+        help='Generate RSS feeds for all zones (without downloading new forecasts)'
+    )
+    parser_gen_all_feeds.set_defaults(func=cmd_generate_all_feeds)
 
     # generate-index command
     parser_index = subparsers.add_parser(

@@ -304,12 +304,26 @@ else
     log_info "✓ Virtual environment already exists"
 fi
 
-# Run full update to generate feeds
-log_info "Downloading forecasts and generating RSS feeds..."
-sudo -u avyrss bash -c "source venv/bin/activate && python3 bin/manage.py full-update" 2>&1 | tee -a "$LOG_FILE"
+# Check if forecasts exist and decide what to do
+if [ -d "$REPO_PATH/forecasts" ] && [ "$(ls -A $REPO_PATH/forecasts 2>/dev/null)" ]; then
+    log_info "Forecasts already exist, regenerating RSS feeds only..."
+    sudo -u avyrss bash -c "source venv/bin/activate && python3 bin/manage.py generate-all-feeds" 2>&1 | tee -a "$LOG_FILE"
+    RESULT=$?
+else
+    log_info "No forecasts found, downloading forecasts and generating RSS feeds..."
+    sudo -u avyrss bash -c "source venv/bin/activate && python3 bin/manage.py full-update" 2>&1 | tee -a "$LOG_FILE"
+    RESULT=$?
+fi
 
-if [ ${PIPESTATUS[0]} -eq 0 ]; then
-    log_info "✓ Initial update completed successfully"
+# Generate index page
+if [ $RESULT -eq 0 ]; then
+    log_info "Generating HTML index page..."
+    sudo -u avyrss bash -c "source venv/bin/activate && python3 bin/manage.py generate-index" 2>&1 | tee -a "$LOG_FILE"
+    RESULT=$?
+fi
+
+if [ $RESULT -eq 0 ]; then
+    log_info "✓ Update completed successfully"
 
     # Set up group permissions with setgid for future updates
     if [ -d "$REPO_PATH/forecasts" ]; then
