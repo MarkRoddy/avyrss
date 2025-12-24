@@ -187,34 +187,82 @@ log_info "  • 9pm UTC  - 1pm PST / 2pm PDT"
 
 echo ""
 
-# Step 4: Run initial update
-log_step "Step 4/5: Running initial update (this may take a few minutes)..."
+# Step 4: Clone repository and run initial update
+log_step "Step 4/5: Setting up repository and generating initial feeds (this may take a few minutes)..."
 
-log_info "Cloning repository and generating initial RSS feeds..."
+REPO_PATH="$BASE_DIR/avyrss"
+REPO_URL="https://github.com/MarkRoddy/avyrss.git"
 
-sudo -u avyrss bash -c "curl -fsSL https://raw.githubusercontent.com/MarkRoddy/avyrss/refs/heads/main/bin/update-feeds.sh | bash -s -- $BASE_DIR" 2>&1 | tee -a "$LOG_FILE"
+# Clone or update repository
+if [ -d "$REPO_PATH/.git" ]; then
+    log_info "Repository exists, pulling latest changes..."
+    cd "$REPO_PATH"
+    sudo -u avyrss git pull origin main 2>&1 | tee -a "$LOG_FILE"
+    if [ ${PIPESTATUS[0]} -ne 0 ]; then
+        log_error "Failed to pull latest changes"
+        exit 1
+    fi
+else
+    log_info "Cloning repository..."
+    # Clone as root, then fix ownership
+    if [ -d "$REPO_PATH" ]; then
+        rm -rf "$REPO_PATH"
+    fi
+
+    git clone "$REPO_URL" "$REPO_PATH" 2>&1 | tee -a "$LOG_FILE"
+    if [ $? -ne 0 ]; then
+        log_error "Failed to clone repository"
+        exit 1
+    fi
+
+    # Set ownership to avyrss user
+    chown -R avyrss:www-data "$REPO_PATH"
+    log_info "✓ Repository cloned successfully"
+fi
+
+cd "$REPO_PATH"
+
+# Set up Python virtual environment
+if [ ! -d "venv" ]; then
+    log_info "Creating Python virtual environment..."
+    sudo -u avyrss python3 -m venv venv 2>&1 | tee -a "$LOG_FILE"
+
+    log_info "Installing dependencies..."
+    sudo -u avyrss bash -c "source venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt" 2>&1 | tee -a "$LOG_FILE"
+
+    if [ ${PIPESTATUS[0]} -ne 0 ]; then
+        log_error "Failed to install dependencies"
+        exit 1
+    fi
+else
+    log_info "✓ Virtual environment already exists"
+fi
+
+# Run full update to generate feeds
+log_info "Downloading forecasts and generating RSS feeds..."
+sudo -u avyrss bash -c "source venv/bin/activate && python3 bin/manage.py full-update" 2>&1 | tee -a "$LOG_FILE"
 
 if [ ${PIPESTATUS[0]} -eq 0 ]; then
     log_info "✓ Initial update completed successfully"
 
     # Set up group permissions with setgid for future updates
-    if [ -d "$BASE_DIR/avyrss/forecasts" ]; then
-        chown -R avyrss:www-data "$BASE_DIR/avyrss/forecasts"
-        chmod -R g+w "$BASE_DIR/avyrss/forecasts"
-        chmod g+s "$BASE_DIR/avyrss/forecasts"
+    if [ -d "$REPO_PATH/forecasts" ]; then
+        chown -R avyrss:www-data "$REPO_PATH/forecasts"
+        chmod -R g+w "$REPO_PATH/forecasts"
+        chmod g+s "$REPO_PATH/forecasts"
         log_info "✓ Set group permissions on forecasts/"
     fi
 
-    if [ -d "$BASE_DIR/avyrss/feeds" ]; then
-        chown -R avyrss:www-data "$BASE_DIR/avyrss/feeds"
-        chmod -R g+w "$BASE_DIR/avyrss/feeds"
-        chmod g+s "$BASE_DIR/avyrss/feeds"
+    if [ -d "$REPO_PATH/feeds" ]; then
+        chown -R avyrss:www-data "$REPO_PATH/feeds"
+        chmod -R g+w "$REPO_PATH/feeds"
+        chmod g+s "$REPO_PATH/feeds"
         log_info "✓ Set group permissions on feeds/"
     fi
 
-    if [ -f "$BASE_DIR/avyrss/index.html" ]; then
-        chown avyrss:www-data "$BASE_DIR/avyrss/index.html"
-        chmod g+w "$BASE_DIR/avyrss/index.html"
+    if [ -f "$REPO_PATH/index.html" ]; then
+        chown avyrss:www-data "$REPO_PATH/index.html"
+        chmod g+w "$REPO_PATH/index.html"
         log_info "✓ Set group permissions on index.html"
     fi
 else
