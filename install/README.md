@@ -4,7 +4,8 @@ This directory contains production installation configuration files for AvyRSS.
 
 ## Files
 
-- **install.sh** - Automated installation script
+- **install-standalone.sh** - Single-file installation script with all configs embedded (recommended)
+- **install.sh** - Modular installation script (requires other files)
 - **avyrss-update.timer** - Systemd timer for scheduled feed updates
 - **avyrss-update.service** - Systemd service for running feed updates
 - **nginx.conf** - Nginx web server configuration for avyrss.com
@@ -12,15 +13,32 @@ This directory contains production installation configuration files for AvyRSS.
 
 ## Quick Start Installation
 
-### Option A: Automated Installation (Recommended)
+### Option A: Standalone Installation (Recommended)
+
+Download and run a single script that contains everything:
+
+```bash
+# Download and run directly
+curl -fsSL https://raw.githubusercontent.com/MarkRoddy/avyrss/main/install/install-standalone.sh | sudo bash
+
+# OR download first, then run
+curl -fsSL https://raw.githubusercontent.com/MarkRoddy/avyrss/main/install/install-standalone.sh -o install-avyrss.sh
+sudo bash install-avyrss.sh
+```
+
+This single file contains all configuration files embedded as heredocs.
+
+### Option B: Modular Installation (from local repository)
+
+If you've cloned the repository:
 
 ```bash
 sudo bash install/install.sh
 ```
 
-This will guide you through the complete setup process.
+This uses the separate config files in the install/ directory.
 
-### Option B: Manual Installation
+### Option C: Manual Installation
 
 ### 1. Prerequisites
 
