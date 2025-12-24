@@ -184,8 +184,7 @@ def preview_entry(center_slug: str, zone_slug: str):
             <div class="metadata">
                 <strong>Entry Title:</strong> {info['title']}<br>
                 <strong>Entry Link (title link):</strong> {f"<a href='{info['url']}'>{info['url']}</a>" if info['url'] else "No link available"}<br>
-                <strong>Published:</strong> {info['date'].strftime('%Y-%m-%d %H:%M UTC')}<br>
-                <strong>Forecast File:</strong> {file_path.name}
+                <strong>Published:</strong> {info['date'].strftime('%Y-%m-%d %H:%M UTC')}
             </div>
 
             <div class="content">
