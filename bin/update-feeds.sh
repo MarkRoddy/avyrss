@@ -48,6 +48,7 @@ if [ $# -ne 1 ]; then
 fi
 
 BASE_DIR="$1"
+REPO_PATH="$BASE_DIR/$REPO_NAME"
 
 # Validate base directory
 if [ ! -d "$BASE_DIR" ]; then
@@ -55,12 +56,21 @@ if [ ! -d "$BASE_DIR" ]; then
     exit 1
 fi
 
-if [ ! -w "$BASE_DIR" ]; then
-    log_error "Directory is not writable: $BASE_DIR"
-    exit 1
+# Check write permissions
+# If repo path already exists, check if we can write to it
+# Otherwise, check if we can write to the base directory
+if [ -d "$REPO_PATH" ]; then
+    if [ ! -w "$REPO_PATH" ]; then
+        log_error "Repository directory is not writable: $REPO_PATH"
+        exit 1
+    fi
+else
+    if [ ! -w "$BASE_DIR" ]; then
+        log_error "Base directory is not writable: $BASE_DIR"
+        log_error "Cannot create repository at: $REPO_PATH"
+        exit 1
+    fi
 fi
-
-REPO_PATH="$BASE_DIR/$REPO_NAME"
 
 log_info "Starting AvyRSS update process"
 log_info "Base directory: $BASE_DIR"
