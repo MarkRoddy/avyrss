@@ -109,11 +109,13 @@ avalanche_centers:
 - Can be checked into source control (static, rarely changes)
 - Uses relative URLs (works on any domain)
 
-### 5. Flask Web Application
+### 5. Flask Development Server
+
+**Purpose**: Development and testing tool only - **NOT for production use**
 
 **Responsibilities**:
-- Serve pre-generated RSS feeds at `/feed/{center}/{zone}`
-- Serve pre-generated index.html at `/`
+- Serve pre-generated RSS feeds at `/feed/{center}/{zone}` for local testing
+- Serve pre-generated index.html at `/` for local testing
 - Health check endpoint at `/health`
 - **NOT** responsible for generating content
 
@@ -121,7 +123,13 @@ avalanche_centers:
 - Uses environment variables for paths
 - Resolves paths relative to project root
 - Development mode: hot reload enabled
-- Production: should use WSGI server (gunicorn)
+- Debug mode: on for development
+
+**Production Deployment**:
+- Flask is NOT used in production
+- Production serves static files directly (nginx, Apache, S3+CloudFront, etc.)
+- No Python runtime needed in production
+- Static files: `index.html`, `feeds/**/*.xml`
 
 ## Data Flow Diagrams
 
@@ -139,10 +147,10 @@ avalanche_centers.yaml
 [Generate index.html from config]
 ```
 
-### Online Request Flow
+### Online Request Flow (Development)
 
 ```
-User Request → Flask App
+User Request → Flask Dev Server
                  ↓
         /feed/{center}/{zone}
                  ↓
@@ -151,16 +159,38 @@ User Request → Flask App
         Return XML with RSS content-type
 ```
 
+### Online Request Flow (Production)
+
+```
+User Request → Static File Server (nginx/S3/etc.)
+                 ↓
+        /feed/{center}/{zone}
+                 ↓
+        Read feeds/{center}/{zone}.xml
+                 ↓
+        Return XML with RSS content-type
+```
+
+**Note**: Production uses any static file server. No Python runtime required.
+
 ## Technology Stack
 
-### Backend
+### Backend (Offline Processing)
 - **Python 3.12+**: Modern Python with type hints
-- **Flask**: Lightweight web framework for serving static content
 - **requests**: HTTP client for API calls
 - **PyYAML**: Configuration file parsing
 - **feedgen**: RSS feed generation
-- **Jinja2**: HTML templating (included with Flask)
+- **Jinja2**: HTML templating
+
+### Backend (Development Server Only)
+- **Flask**: Development web server for testing (NOT for production)
 - **python-dotenv**: Environment variable management
+
+### Production Serving
+- **Any static file server**: nginx, Apache, S3+CloudFront, Caddy, etc.
+- No Python runtime required
+- No database required
+- Just serve static files from `feeds/` and `index.html`
 
 ### Frontend
 - **Static HTML**: No JavaScript framework needed
@@ -280,8 +310,9 @@ User Request → Flask App
    - Code depends on date-based organization
    - Don't flatten or reorganize arbitrarily
 
-4. **Flask app serves static files only**
-   - Don't add dynamic generation to request handlers
+4. **Flask is for development only**
+   - Production serves static files directly (no Flask, no Python runtime)
+   - Flask dev server is just for local testing
    - Keep the offline/online separation clear
 
 5. **Use Path objects for file operations**

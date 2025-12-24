@@ -84,7 +84,9 @@ python3 bin/manage.py generate-feed northwest-avalanche-center snoqualmie-pass
 python3 bin/manage.py full-update
 ```
 
-### 3. Start the development server
+### 3. Start the development server (optional)
+
+The Flask development server is useful for local testing:
 
 ```bash
 python3 app/main.py
@@ -96,13 +98,15 @@ The application will be available at `http://localhost:5000`
 - RSS feed example: `http://localhost:5000/feed/northwest-avalanche-center/snoqualmie-pass`
 - Health check: `http://localhost:5000/health`
 
+**Note**: Flask is for development only. In production, serve the static files (`index.html` and `feeds/`) directly using any static file server.
+
 ## Project Structure
 
 ```
 .
-├── app/                        # Flask application code
+├── app/                        # Application code
 │   ├── __init__.py
-│   ├── main.py                # Flask app entry point
+│   ├── main.py                # Flask dev server (development only)
 │   ├── avalanche.py           # Avalanche center/zone configuration
 │   ├── forecasts.py           # Forecast downloading and storage
 │   ├── rss.py                 # RSS feed generation
@@ -247,33 +251,6 @@ python3 bin/manage.py generate-index
 
 # Start the server and test
 python3 app/main.py
-```
-
-## Deployment
-
-### Production Considerations
-
-1. **Scheduled Updates**: Set up a cron job or scheduled task to run `bin/manage.py full-update` daily
-2. **Environment Variables**: Configure production URLs in `.env`
-3. **Web Server**: Use a production WSGI server like gunicorn instead of Flask's dev server
-4. **Static Files**: Ensure `feeds/` and `forecasts/` directories are persistent
-5. **Monitoring**: Use the `/health` endpoint for health checks
-
-### Example Cron Job
-
-```cron
-# Update forecasts and feeds daily at 6 AM
-0 6 * * * cd /path/to/avyrss && /path/to/avyrss/venv/bin/python bin/manage.py full-update
-```
-
-### Example Production Server
-
-```bash
-# Install gunicorn
-pip install gunicorn
-
-# Run with gunicorn
-gunicorn -w 4 -b 0.0.0.0:8000 app.main:app
 ```
 
 ## Documentation

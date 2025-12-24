@@ -113,7 +113,9 @@ This will:
 2. Generate RSS feeds for all zones
 3. Display a summary of successes/failures
 
-## Starting the Server
+## Starting the Development Server
+
+For local testing, start the Flask development server:
 
 ```bash
 python3 app/main.py
@@ -125,6 +127,8 @@ python3 app/main.py
  * Debug mode: on
  * Running on http://127.0.0.1:5000
 ```
+
+**Note**: Flask is for development only. In production, serve static files (`index.html` and `feeds/`) with nginx, S3, or any static file server.
 
 ## Verifying Everything Works
 
@@ -271,28 +275,6 @@ python3 bin/manage.py generate-index
 2. Read [TECHNICAL.md](TECHNICAL.md) for coding standards
 3. Make changes to code
 4. Test with single zone before full update
-
-### For Production Deployment
-
-1. Set up scheduled daily updates:
-   ```bash
-   # Cron example: daily at 6 AM
-   0 6 * * * cd /path/to/avyrss && /path/to/avyrss/venv/bin/python bin/manage.py full-update
-   ```
-
-2. Use production WSGI server:
-   ```bash
-   pip install gunicorn
-   gunicorn -w 4 -b 0.0.0.0:8000 app.main:app
-   ```
-
-3. Set up reverse proxy (nginx, caddy, etc.)
-
-4. Configure environment for production:
-   ```bash
-   FLASK_DEBUG=0
-   FLASK_ENV=production
-   ```
 
 ### For Daily Operations
 

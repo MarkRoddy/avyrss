@@ -7,7 +7,8 @@ This guide is for AI agents and developers working on AvyRss code.
 AvyRss generates static RSS feeds for avalanche forecasts. The architecture follows a strict **offline/online separation**:
 
 - **Offline**: Download forecasts, generate RSS feeds and HTML (via `bin/manage.py`)
-- **Online**: Flask serves pre-generated static files
+- **Online Development**: Flask dev server serves pre-generated static files for testing
+- **Online Production**: Static file server (nginx/S3/etc.) serves pre-generated files - no Python runtime
 
 ## Starting a New Development Session
 
@@ -41,6 +42,7 @@ curl http://localhost:5000/health
 - Use absolute URLs (http://localhost:...) in templates
 - Change the forecast directory structure
 - Add a database
+- Use Flask in production (it's dev-only)
 
 **ALWAYS do these:**
 - Use relative URLs in templates (`/feed/...` not `http://...`)
@@ -48,6 +50,7 @@ curl http://localhost:5000/health
 - Resolve paths relative to PROJECT_ROOT
 - Keep offline/online separation clear
 - Test with single zone before full updates
+- Remember Flask is for development/testing only
 
 ## Common Development Tasks
 
@@ -98,6 +101,8 @@ curl http://localhost:5000/health
 
 ### Adding a Flask Route
 
+**Note**: Flask is for development only. Only add routes for local testing purposes.
+
 ```python
 # In app/main.py
 
@@ -111,7 +116,10 @@ def new_route():
     return send_file(file_path, mimetype='...')
 ```
 
-**Remember**: Don't generate content dynamically. Serve pre-generated files.
+**Remember**:
+- Don't generate content dynamically. Serve pre-generated files.
+- Flask routes are for development testing only
+- Production will serve the same static files directly (no Flask)
 
 ### Modifying API Calls
 

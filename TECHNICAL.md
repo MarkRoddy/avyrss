@@ -10,14 +10,16 @@ This document defines the technical preferences, coding standards, and tooling c
 - **Type Hints**: Use them everywhere for better IDE support and documentation
 - **Format**: Follow PEP 8 style guide
 
-### Backend Framework
+### Development Server
 - **Choice**: Flask
-- **Why**: Lightweight, simple, perfect for serving static content
+- **Purpose**: Development and testing only (NOT for production)
+- **Why**: Lightweight, simple, perfect for local testing of static content
 - **Configuration**:
   - Development: hot reload enabled
   - Debug mode: on for development
   - Host: 0.0.0.0 (accessible from network)
   - Port: 5000 (configurable via environment)
+- **Production**: Flask is NOT used. Serve static files with nginx/S3/etc.
 
 ### Frontend
 - **HTML**: Static, generated from Jinja2 templates
@@ -256,7 +258,9 @@ except requests.RequestException as e:
 - Zones: `lowercase-with-hyphens`
 - Routes: `/lowercase/path`
 
-## Flask Specific
+## Flask Development Server
+
+**Important**: Flask is for development/testing only. Production serves static files directly.
 
 ### Application Structure
 ```python
@@ -266,9 +270,11 @@ app = Flask(__name__)
 
 @app.route('/path')
 def handler():
-    return response
+    # Serve pre-generated static file
+    return send_file(path, mimetype='...')
 
 if __name__ == '__main__':
+    # Development server only
     app.run(debug=True, host='0.0.0.0', port=5000)
 ```
 
@@ -282,6 +288,15 @@ if __name__ == '__main__':
 - Serve pre-generated files using `send_file()`
 - Never generate content in request handlers
 - Keep routes thin - they're just file servers
+
+### Production Serving
+Flask is NOT used in production. Options include:
+- **nginx**: Directly serve `index.html` and `feeds/` directory
+- **S3 + CloudFront**: Upload static files to S3, serve via CDN
+- **Apache**: Configure DocumentRoot to serve static files
+- **Caddy**: Simple static file server with automatic HTTPS
+
+No Python runtime required in production.
 
 ## Performance Considerations
 
