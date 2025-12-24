@@ -1,0 +1,36 @@
+# AvyRSS Feed Update Timer
+#
+# This systemd timer runs the feed update process every 6 hours at fixed UTC times.
+#
+# Installation:
+#   sudo cp install/avyrss-update.timer /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable avyrss-update.timer
+#   sudo systemctl start avyrss-update.timer
+#
+# Verification:
+#   sudo systemctl status avyrss-update.timer
+#   sudo systemctl list-timers avyrss-update.timer
+#
+# Schedule (UTC times - works regardless of server timezone):
+#   3am UTC  - 7pm PST / 8pm PDT (catches fresh forecasts)
+#   9am UTC  - 1am PST / 2am PDT
+#   3pm UTC  - 7am PST / 8am PDT
+#   9pm UTC  - 1pm PST / 2pm PDT
+
+[Unit]
+Description=AvyRSS Feed Update Timer
+Documentation=https://github.com/MarkRoddy/avyrss
+
+[Timer]
+# Run at 3am, 9am, 3pm, 9pm UTC daily
+OnCalendar=*-*-* 03,09,15,21:00:00
+
+# If system was down, run missed updates on next boot
+Persistent=true
+
+# Randomize start time by up to 5 minutes to avoid thundering herd
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

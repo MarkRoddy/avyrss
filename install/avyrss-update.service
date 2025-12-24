@@ -1,0 +1,63 @@
+# AvyRSS Feed Update Service
+#
+# This systemd service updates AvyRSS feeds by fetching fresh avalanche forecasts
+# and regenerating RSS feeds and the index page.
+#
+# Installation:
+#   sudo cp install/avyrss-update.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#
+# Manual execution:
+#   sudo systemctl start avyrss-update.service
+#
+# Check status:
+#   sudo systemctl status avyrss-update.service
+#
+# View logs:
+#   sudo journalctl -u avyrss-update.service
+#   sudo journalctl -u avyrss-update.service -f  # follow
+#
+# Security:
+#   - Runs as dedicated 'avyrss' user (not www-data)
+#   - Files created with group www-data for nginx access
+#   - UMask 0002 ensures group write permissions
+#   - www-data remains locked down (no shell required)
+
+[Unit]
+Description=AvyRSS Feed Update Service
+Documentation=https://github.com/MarkRoddy/avyrss
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+
+# Run as dedicated user with www-data group
+User=avyrss
+Group=www-data
+
+# Ensure group-writable files for www-data nginx access
+UMask=0002
+
+# Working directory
+WorkingDirectory=/var/www
+
+# Fetch and execute update script from GitHub
+# This ensures we always run the latest version
+ExecStart=/bin/bash -c 'curl -fsSL https://raw.githubusercontent.com/MarkRoddy/avyrss/refs/heads/main/bin/update-feeds.sh | bash -s -- /var/www'
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=avyrss-update
+
+# Security hardening
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/www/avyrss /var/log
+
+# Resource limits
+# Timeout after 15 minutes (should complete in <5 minutes normally)
+TimeoutStartSec=900
