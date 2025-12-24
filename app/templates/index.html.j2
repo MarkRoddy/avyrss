@@ -55,20 +55,62 @@
         }
 
         .center {
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
-        .center h2 {
+        .center details {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 0;
+        }
+
+        .center details[open] {
+            background: white;
+        }
+
+        .center summary {
             color: #34495e;
+            font-size: 1.3em;
+            font-weight: 600;
+            padding: 20px;
+            cursor: pointer;
+            user-select: none;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .center summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .center summary:hover {
+            background-color: #f0f0f0;
+        }
+
+        .center details[open] summary {
             border-bottom: 3px solid #3498db;
-            padding-bottom: 10px;
             margin-bottom: 20px;
+        }
+
+        .center summary::before {
+            content: '▶';
+            margin-right: 10px;
+            transition: transform 0.2s;
+            color: #3498db;
+        }
+
+        .center details[open] summary::before {
+            transform: rotate(90deg);
         }
 
         .zones {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 15px;
+            padding: 0 20px 20px 20px;
         }
 
         .zone-card {
@@ -153,21 +195,23 @@
 
         {% for center_slug, center_data in centers.items() | sort(attribute='1.name') %}
         <div class="center">
-            <h2>{{ center_data.name }}</h2>
-            <div class="zones">
-                {% for zone in center_data.zones | sort(attribute='name') %}
-                <div class="zone-card">
-                    <div class="zone-name">{{ zone.name }}</div>
-                    <a href="/feed/{{ center_slug }}/{{ zone.slug }}"
-                       class="rss-link">
-                        <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
-                        </svg>
-                        Subscribe to RSS Feed
-                    </a>
+            <details>
+                <summary>{{ center_data.name }}</summary>
+                <div class="zones">
+                    {% for zone in center_data.zones | sort(attribute='name') %}
+                    <div class="zone-card">
+                        <div class="zone-name">{{ zone.name }}</div>
+                        <a href="/feed/{{ center_slug }}/{{ zone.slug }}"
+                           class="rss-link">
+                            <svg class="rss-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
+                            </svg>
+                            Subscribe to RSS Feed
+                        </a>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
+            </details>
         </div>
         {% endfor %}
 
