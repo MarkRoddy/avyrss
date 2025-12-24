@@ -120,8 +120,41 @@ def preview_entry(center_slug: str, zone_slug: str):
         file_path, forecast_data = recent_forecasts[0]
         info = extract_forecast_info(forecast_data, zone_name=zone_name)
 
+        # Import the helper function
+        from app.rss import danger_level_to_text
+
         # Build the same description HTML that goes into the RSS feed
         description_parts = []
+
+        # Add author
+        if info['author']:
+            description_parts.append(f"<p><strong>Forecaster:</strong> {info['author']}</p>")
+
+        # Add danger ratings
+        if info['danger']:
+            description_parts.append("<p><strong>Avalanche Danger:</strong></p>")
+            description_parts.append("<ul>")
+            description_parts.append(
+                f"<li>Above Treeline: {danger_level_to_text(info['danger'].get('upper'))}</li>"
+            )
+            description_parts.append(
+                f"<li>Treeline: {danger_level_to_text(info['danger'].get('middle'))}</li>"
+            )
+            description_parts.append(
+                f"<li>Below Treeline: {danger_level_to_text(info['danger'].get('lower'))}</li>"
+            )
+            description_parts.append("</ul>")
+
+        # Add avalanche problems
+        if info['problems']:
+            description_parts.append("<p><strong>Avalanche Problems:</strong></p>")
+            for problem in info['problems']:
+                size_text = ', '.join(problem['size']) if problem['size'] else 'Unknown'
+                description_parts.append(
+                    f"<p><em>{problem['name']}</em> - "
+                    f"Likelihood: {problem['likelihood'].capitalize()}, "
+                    f"Size: D{size_text}</p>"
+                )
 
         # Add bottom line
         if info['bottom_line']:

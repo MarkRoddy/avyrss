@@ -88,3 +88,14 @@ The dev server runs with debug mode enabled by default, which provides:
 - Detailed error pages
 
 **Note:** This is for development only. Never use the Flask development server in production.
+
+## When to Restart the Dev Server
+
+**You rarely need to manually restart the dev server.** Flask's debug mode automatically handles most changes:
+
+- **Python code changes**: Flask automatically reloads (no manual restart needed)
+- **RSS feed regeneration**: Read from disk on each request (no restart needed)
+- **New forecast downloads**: Read from disk on each request (no restart needed)
+- **index.html updates**: Read from disk on each request (no restart needed)
+
+The only time you might need to manually restart is if Flask's auto-reload mechanism fails, which is uncommon during normal development.

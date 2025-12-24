@@ -16,6 +16,26 @@ from app.forecasts import get_recent_forecasts
 logger = logging.getLogger(__name__)
 
 
+def danger_level_to_text(level: int) -> str:
+    """
+    Convert numeric danger level to text.
+
+    Args:
+        level: Danger level (1-5)
+
+    Returns:
+        Text name of danger level
+    """
+    mapping = {
+        1: 'Low',
+        2: 'Moderate',
+        3: 'Considerable',
+        4: 'High',
+        5: 'Extreme'
+    }
+    return mapping.get(level, 'Unknown')
+
+
 def extract_forecast_info(forecast_data: Dict, zone_name: str = None) -> Dict:
     """
     Extract relevant information from a forecast data structure.
@@ -25,7 +45,7 @@ def extract_forecast_info(forecast_data: Dict, zone_name: str = None) -> Dict:
         zone_name: Optional zone name to include in the title
 
     Returns:
-        Dictionary with extracted info: title, date, bottom_line, url
+        Dictionary with extracted info: title, date, bottom_line, url, author, danger, problems
     """
     forecast = forecast_data.get('forecast', {})
 
@@ -35,7 +55,10 @@ def extract_forecast_info(forecast_data: Dict, zone_name: str = None) -> Dict:
             'title': 'No forecast available',
             'date': datetime.fromisoformat(forecast_data['request_time'].rstrip('Z')),
             'bottom_line': 'Forecast data not available.',
-            'url': None
+            'url': None,
+            'author': None,
+            'danger': None,
+            'problems': []
         }
 
     # Extract published date
@@ -54,6 +77,28 @@ def extract_forecast_info(forecast_data: Dict, zone_name: str = None) -> Dict:
     if forecast_zones and len(forecast_zones) > 0:
         forecast_url = forecast_zones[0].get('url')
 
+    # Extract author
+    author = forecast.get('author')
+
+    # Extract danger ratings (use current day)
+    danger_ratings = None
+    danger_list = forecast.get('danger', [])
+    if danger_list:
+        # Find current day danger rating
+        for danger_entry in danger_list:
+            if danger_entry.get('valid_day') == 'current':
+                danger_ratings = danger_entry
+                break
+
+    # Extract avalanche problems
+    problems = []
+    for problem in forecast.get('forecast_avalanche_problems', []):
+        problems.append({
+            'name': problem.get('name', 'Unknown'),
+            'likelihood': problem.get('likelihood', 'Unknown'),
+            'size': problem.get('size', [])
+        })
+
     # Create title
     date_str = date.strftime('%Y-%m-%d')
 
@@ -67,7 +112,10 @@ def extract_forecast_info(forecast_data: Dict, zone_name: str = None) -> Dict:
         'title': title,
         'date': date,
         'bottom_line': bottom_line,
-        'url': forecast_url
+        'url': forecast_url,
+        'author': author,
+        'danger': danger_ratings,
+        'problems': problems
     }
 
 
@@ -142,6 +190,36 @@ def generate_rss_feed(
 
             # Build description HTML
             description_parts = []
+
+            # Add author
+            if info['author']:
+                description_parts.append(f"<p><strong>Forecaster:</strong> {info['author']}</p>")
+
+            # Add danger ratings
+            if info['danger']:
+                description_parts.append("<p><strong>Avalanche Danger:</strong></p>")
+                description_parts.append("<ul>")
+                description_parts.append(
+                    f"<li>Above Treeline: {danger_level_to_text(info['danger'].get('upper'))}</li>"
+                )
+                description_parts.append(
+                    f"<li>Treeline: {danger_level_to_text(info['danger'].get('middle'))}</li>"
+                )
+                description_parts.append(
+                    f"<li>Below Treeline: {danger_level_to_text(info['danger'].get('lower'))}</li>"
+                )
+                description_parts.append("</ul>")
+
+            # Add avalanche problems
+            if info['problems']:
+                description_parts.append("<p><strong>Avalanche Problems:</strong></p>")
+                for problem in info['problems']:
+                    size_text = ', '.join(problem['size']) if problem['size'] else 'Unknown'
+                    description_parts.append(
+                        f"<p><em>{problem['name']}</em> - "
+                        f"Likelihood: {problem['likelihood'].capitalize()}, "
+                        f"Size: D{size_text}</p>"
+                    )
 
             # Add bottom line
             if info['bottom_line']:
