@@ -48,8 +48,11 @@ def extract_forecast_info(forecast_data: Dict) -> Dict:
     # Extract bottom line
     bottom_line = forecast.get('bottom_line', 'No bottom line available.')
 
-    # Extract forecast URL
-    forecast_url = forecast.get('forecast_url') or forecast.get('url')
+    # Extract forecast URL from forecast_zone
+    forecast_url = None
+    forecast_zones = forecast.get('forecast_zone', [])
+    if forecast_zones and len(forecast_zones) > 0:
+        forecast_url = forecast_zones[0].get('url')
 
     # Extract danger level (if available)
     danger = forecast.get('danger', [])
