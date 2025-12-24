@@ -16,12 +16,13 @@ from app.forecasts import get_recent_forecasts
 logger = logging.getLogger(__name__)
 
 
-def extract_forecast_info(forecast_data: Dict) -> Dict:
+def extract_forecast_info(forecast_data: Dict, zone_name: str = None) -> Dict:
     """
     Extract relevant information from a forecast data structure.
 
     Args:
         forecast_data: The full forecast data dict (with request_time, forecast, etc)
+        zone_name: Optional zone name to include in the title
 
     Returns:
         Dictionary with extracted info: title, date, bottom_line, url, danger_level
@@ -57,15 +58,36 @@ def extract_forecast_info(forecast_data: Dict) -> Dict:
     # Extract danger level (if available)
     danger = forecast.get('danger', [])
     danger_level = None
+    danger_level_text = None
     if danger and len(danger) > 0:
         # Get the most recent danger rating
         danger_level = danger[0].get('lower', 'Unknown')
 
+        # Map numeric danger levels to text
+        danger_map = {
+            1: 'Low',
+            2: 'Moderate',
+            3: 'Considerable',
+            4: 'High',
+            5: 'Extreme'
+        }
+
+        if isinstance(danger_level, int):
+            danger_level_text = danger_map.get(danger_level, str(danger_level))
+        else:
+            danger_level_text = str(danger_level)
+
     # Create title
     date_str = date.strftime('%Y-%m-%d')
-    title = f"Avalanche Forecast for {date_str}"
-    if danger_level:
-        title += f" - {danger_level}"
+
+    # Build title with zone name if provided
+    if zone_name:
+        title = f"{zone_name} Avalanche Forecast - {date_str}"
+    else:
+        title = f"Avalanche Forecast for {date_str}"
+
+    if danger_level_text:
+        title += f" - {danger_level_text}"
 
     return {
         'title': title,
@@ -138,7 +160,7 @@ def generate_rss_feed(
     else:
         # Add entries for each forecast
         for file_path, forecast_data in recent_forecasts:
-            info = extract_forecast_info(forecast_data)
+            info = extract_forecast_info(forecast_data, zone_name=zone_name)
 
             fe = fg.add_entry()
             fe.id(f"{base_url}/feed/{center_slug}/{zone_slug}/{info['date'].strftime('%Y-%m-%d')}")

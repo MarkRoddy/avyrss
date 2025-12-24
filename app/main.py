@@ -118,7 +118,7 @@ def preview_entry(center_slug: str, zone_slug: str):
 
         # Extract forecast info
         file_path, forecast_data = recent_forecasts[0]
-        info = extract_forecast_info(forecast_data)
+        info = extract_forecast_info(forecast_data, zone_name=zone_name)
 
         # Build the same description HTML that goes into the RSS feed
         description_parts = []
