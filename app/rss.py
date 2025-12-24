@@ -25,7 +25,7 @@ def extract_forecast_info(forecast_data: Dict, zone_name: str = None) -> Dict:
         zone_name: Optional zone name to include in the title
 
     Returns:
-        Dictionary with extracted info: title, date, bottom_line, url, danger_level
+        Dictionary with extracted info: title, date, bottom_line, url
     """
     forecast = forecast_data.get('forecast', {})
 
@@ -35,8 +35,7 @@ def extract_forecast_info(forecast_data: Dict, zone_name: str = None) -> Dict:
             'title': 'No forecast available',
             'date': datetime.fromisoformat(forecast_data['request_time'].rstrip('Z')),
             'bottom_line': 'Forecast data not available.',
-            'url': None,
-            'danger_level': None
+            'url': None
         }
 
     # Extract published date
@@ -55,46 +54,20 @@ def extract_forecast_info(forecast_data: Dict, zone_name: str = None) -> Dict:
     if forecast_zones and len(forecast_zones) > 0:
         forecast_url = forecast_zones[0].get('url')
 
-    # Extract danger level (if available)
-    danger = forecast.get('danger', [])
-    danger_level = None
-    danger_level_text = None
-    if danger and len(danger) > 0:
-        # Get the most recent danger rating
-        danger_level = danger[0].get('lower', 'Unknown')
-
-        # Map numeric danger levels to text
-        danger_map = {
-            1: 'Low',
-            2: 'Moderate',
-            3: 'Considerable',
-            4: 'High',
-            5: 'Extreme'
-        }
-
-        if isinstance(danger_level, int):
-            danger_level_text = danger_map.get(danger_level, str(danger_level))
-        else:
-            danger_level_text = str(danger_level)
-
     # Create title
     date_str = date.strftime('%Y-%m-%d')
 
     # Build title with zone name if provided
     if zone_name:
-        title = f"{zone_name} Avalanche Forecast - {date_str}"
+        title = f"{zone_name} Avalanche Forecast for {date_str}"
     else:
         title = f"Avalanche Forecast for {date_str}"
-
-    if danger_level_text:
-        title += f" - {danger_level_text}"
 
     return {
         'title': title,
         'date': date,
         'bottom_line': bottom_line,
-        'url': forecast_url,
-        'danger_level': danger_level
+        'url': forecast_url
     }
 
 
