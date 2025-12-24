@@ -1,6 +1,6 @@
 # Future Enhancements
 
-This document outlines planned future enhancements to AvyRss.
+This document outlines planned future enhancements to AvyRSS.
 
 ## Planned Enhancements
 

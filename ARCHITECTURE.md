@@ -1,10 +1,10 @@
-# AvyRss - Architecture
+# AvyRSS - Architecture
 
-This document outlines the system architecture, design decisions, and constraints for the AvyRss project.
+This document outlines the system architecture, design decisions, and constraints for the AvyRSS project.
 
 ## Overview
 
-AvyRss is a web application that generates and serves RSS feeds for avalanche forecasts. The key architectural principle is **static content generation** - all user-facing content is pre-generated offline and served as static files.
+AvyRSS is a web application that generates and serves RSS feeds for avalanche forecasts. The key architectural principle is **static content generation** - all user-facing content is pre-generated offline and served as static files.
 
 ## System Architecture
 

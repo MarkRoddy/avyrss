@@ -1,6 +1,6 @@
-# AvyRss - Complete Setup Guide
+# AvyRSS - Complete Setup Guide
 
-This guide will walk you through setting up AvyRss from scratch, whether you're cloning the repository for the first time or starting fresh.
+This guide will walk you through setting up AvyRSS from scratch, whether you're cloning the repository for the first time or starting fresh.
 
 ## Prerequisites
 

@@ -1,6 +1,6 @@
 # Technical Preferences and Standards
 
-This document defines the technical preferences, coding standards, and tooling choices for the AvyRss project.
+This document defines the technical preferences, coding standards, and tooling choices for the AvyRSS project.
 
 ## Language & Framework Choices
 

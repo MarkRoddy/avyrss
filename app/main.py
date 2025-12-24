@@ -54,7 +54,7 @@ def index():
 
     if not index_path.exists():
         return Response(
-            "<html><body><h1>AvyRss</h1><p>Avalanche Forecast RSS Feeds</p>"
+            "<html><body><h1>AvyRSS</h1><p>Avalanche Forecast RSS Feeds</p>"
             "<p>Index page not yet generated. Run <code>bin/manage.py generate-index</code> to create it.</p>"
             "</body></html>",
             mimetype='text/html'

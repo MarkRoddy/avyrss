@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Offline operations management script for AvyRss.
+Offline operations management script for AvyRSS.
 
 This script provides commands for:
 - Downloading forecasts
@@ -123,7 +123,7 @@ def cmd_generate_index(args):
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description='AvyRss offline operations management',
+        description='AvyRSS offline operations management',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

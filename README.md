@@ -1,10 +1,10 @@
-# AvyRss
+# AvyRSS
 
 RSS feeds for avalanche forecasts, making it easy to stay informed about backcountry conditions through your favorite feed reader.
 
 ## Overview
 
-AvyRss generates and serves RSS feeds for avalanche forecasts from various avalanche centers across North America. The feeds are updated daily and include the latest forecast bottom-line summaries with links to full forecast details.
+AvyRSS generates and serves RSS feeds for avalanche forecasts from various avalanche centers across North America. The feeds are updated daily and include the latest forecast bottom-line summaries with links to full forecast details.
 
 **Key Features:**
 - RSS feeds for 57 zones across 14 avalanche centers
@@ -189,7 +189,7 @@ All forecast data comes from the [avalanche.org API](https://api.avalanche.org/v
 
 ### Static Content Generation
 
-AvyRss uses an offline generation model:
+AvyRSS uses an offline generation model:
 1. Forecasts are downloaded and stored as JSON files on disk
 2. RSS feeds are pre-generated from stored forecasts
 3. The HTML index page is generated from the configuration

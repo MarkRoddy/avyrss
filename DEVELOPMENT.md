@@ -1,10 +1,10 @@
 # Development Guide
 
-This guide is for AI agents and developers working on AvyRss code.
+This guide is for AI agents and developers working on AvyRSS code.
 
 ## Quick Context
 
-AvyRss generates static RSS feeds for avalanche forecasts. The architecture follows a strict **offline/online separation**:
+AvyRSS generates static RSS feeds for avalanche forecasts. The architecture follows a strict **offline/online separation**:
 
 - **Offline**: Download forecasts, generate RSS feeds and HTML (via `bin/manage.py`)
 - **Online Development**: Flask dev server serves pre-generated static files for testing

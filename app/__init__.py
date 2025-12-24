@@ -1,3 +1,3 @@
-"""AvyRss - Avalanche Forecast RSS Feed Generator"""
+"""AvyRSS - Avalanche Forecast RSS Feed Generator"""
 
 __version__ = "0.1.0"
