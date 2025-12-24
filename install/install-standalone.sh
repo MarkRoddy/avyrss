@@ -362,23 +362,12 @@ cat > "/etc/nginx/sites-available/$NGINX_SITE" <<'EOF'
 #
 # This configuration serves the AvyRSS static files for avyrss.com
 
-# Redirect www to non-www
-server {
-    listen 80;
-    listen [::]:80;
-
-    server_name www.avyrss.com;
-
-    # Redirect to non-www
-    return 301 http://avyrss.com$request_uri;
-}
-
 # Main server block
 server {
     listen 80;
     listen [::]:80;
 
-    server_name avyrss.com;
+    server_name www.avyrss.com avyrss.com;
 
     # Root directory where AvyRSS files are located
     root /var/www/avyrss;
