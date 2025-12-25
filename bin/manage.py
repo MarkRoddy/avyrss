@@ -119,7 +119,7 @@ def cmd_generate_all_feeds(args):
     print("RSS Feed Generation Complete")
     print("=" * 50)
     total = feed_results['total']
-    successful = feed_results['successful']
+    successful = feed_results['success']
     failed = feed_results['failed']
 
     print(f"Total zones: {total}")

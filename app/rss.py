@@ -118,11 +118,15 @@ def extract_forecast_info(forecast_data: Dict, zone_name: str = None) -> Dict:
     # Calculate overall danger (highest of the three elevation bands for current day)
     overall_danger = None
     if danger_current:
-        overall_danger = max(
-            danger_current.get('upper', 0),
-            danger_current.get('middle', 0),
-            danger_current.get('lower', 0)
-        )
+        # Filter out None values before calculating max
+        levels = [
+            danger_current.get('upper'),
+            danger_current.get('middle'),
+            danger_current.get('lower')
+        ]
+        levels = [l for l in levels if l is not None]
+        if levels:
+            overall_danger = max(levels)
 
     # Extract avalanche problems
     problems = []
@@ -499,10 +503,10 @@ def generate_all_feeds(
         feeds_dir: Directory to save feeds
 
     Returns:
-        Dictionary with counts: {'success': N, 'failed': M, 'total': T}
+        Dictionary with counts: {'success': N, 'failed': M, 'total': T, 'failed_zones': [(center, zone), ...]}
     """
     all_zones = config.get_all_zones()
-    results = {'success': 0, 'failed': 0, 'total': len(all_zones)}
+    results = {'success': 0, 'failed': 0, 'total': len(all_zones), 'failed_zones': []}
 
     logger.info(f"Generating RSS feeds for {results['total']} zones...")
 
@@ -518,6 +522,7 @@ def generate_all_feeds(
         except Exception as e:
             logger.error(f"Error generating feed for {center_slug}/{zone_slug}: {e}")
             results['failed'] += 1
+            results['failed_zones'].append((center_slug, zone_slug))
 
     logger.info(
         f"Feed generation complete: {results['success']} succeeded, "
