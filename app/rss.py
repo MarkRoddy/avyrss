@@ -93,6 +93,9 @@ def extract_forecast_info(forecast_data: Dict, zone_name: str = None) -> Dict:
     # Extract bottom line
     bottom_line = forecast.get('bottom_line', 'No bottom line available.')
 
+    # Extract forecast discussion
+    forecast_discussion = forecast.get('hazard_discussion', '')
+
     # Extract forecast URL from forecast_zone
     forecast_url = None
     forecast_zones = forecast.get('forecast_zone', [])
@@ -143,6 +146,7 @@ def extract_forecast_info(forecast_data: Dict, zone_name: str = None) -> Dict:
         'title': title,
         'date': date,
         'bottom_line': bottom_line,
+        'forecast_discussion': forecast_discussion,
         'url': forecast_url,
         'author': author,
         'danger_current': danger_current,
@@ -378,6 +382,17 @@ def generate_rss_feed(
                         f"</div>"
                     )
                 description_parts.append("</div>")
+
+            # Add forecast discussion
+            if info.get('forecast_discussion'):
+                description_parts.append(
+                    "<div style='margin: 20px 0;'>"
+                    "<p style='font-size: 18px; font-weight: bold; margin: 0 0 15px 0; text-transform: uppercase;'>"
+                    "Forecast Discussion"
+                    "</p>"
+                    f"<div style='line-height: 1.6;'>{info['forecast_discussion']}</div>"
+                    "</div>"
+                )
 
             # Add link to full forecast
             if info['url']:

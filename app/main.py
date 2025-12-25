@@ -281,6 +281,17 @@ def preview_entry(center_slug: str, zone_slug: str):
                 )
             description_parts.append("</div>")
 
+        # Add forecast discussion
+        if info.get('forecast_discussion'):
+            description_parts.append(
+                "<div style='margin: 20px 0;'>"
+                "<p style='font-size: 18px; font-weight: bold; margin: 0 0 15px 0; text-transform: uppercase;'>"
+                "Forecast Discussion"
+                "</p>"
+                f"<div style='line-height: 1.6;'>{info['forecast_discussion']}</div>"
+                "</div>"
+            )
+
         # Add link to full forecast
         if info['url']:
             description_parts.append(
