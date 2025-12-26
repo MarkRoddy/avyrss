@@ -23,6 +23,7 @@ PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 FEEDS_DIR = PROJECT_ROOT / os.getenv('FEEDS_DIR', 'feeds')
 INDEX_HTML_PATH = PROJECT_ROOT / os.getenv('INDEX_HTML_PATH', 'index.html')
 FORECASTS_DIR = PROJECT_ROOT / os.getenv('FORECASTS_DIR', 'forecasts')
+ASSETS_DIR = PROJECT_ROOT / 'assets'
 CONFIG_PATH = PROJECT_ROOT / 'avalanche_centers.yaml'
 
 
@@ -69,8 +70,20 @@ def index():
     return send_file(index_path, mimetype='text/html')
 
 
+@app.route('/assets/<path:filename>')
+def serve_assets(filename: str):
+    """Serve static assets (like danger icons)."""
+    asset_path = ASSETS_DIR / filename
+
+    if not asset_path.exists():
+        abort(404, description=f"Asset not found: {filename}")
+
+    return send_file(asset_path)
+
+
 @app.route('/dev/preview-entry/<center_slug>/<zone_slug>')
-def preview_entry(center_slug: str, zone_slug: str):
+@app.route('/dev/preview-entry/<center_slug>/<zone_slug>/<mode>')
+def preview_entry(center_slug: str, zone_slug: str, mode: str = 'normal'):
     """
     Development endpoint to preview the HTML content of an RSS feed entry.
     Shows the latest forecast entry for the specified zone.
@@ -134,129 +147,64 @@ def preview_entry(center_slug: str, zone_slug: str):
                 f"</p>"
             )
 
-        # Add bottom line FIRST with danger icon (neutral background)
+        # Add bottom line with small danger icon
         if info['bottom_line']:
             overall_danger = info.get('overall_danger')
             danger_icon = ""
             if overall_danger:
+                # Use our locally hosted, small (40x40) danger icons
                 danger_icon = (
-                    f"<img src='https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{overall_danger}.png' "
-                    f"alt='{danger_level_to_text(overall_danger)}' height='30' style='vertical-align: middle; margin-right: 10px;' />"
+                    f'<img src="/assets/danger-icons/{overall_danger}.png" '
+                    f'alt="{danger_level_to_text(overall_danger)}" /> '
                 )
 
             description_parts.append(
-                "<div style='margin: 20px 0; padding: 15px; background-color: #f5f5f5; border: 2px solid #999; border-radius: 4px;'>"
-                "<p style='font-size: 18px; font-weight: bold; margin: 0 0 10px 0; text-transform: uppercase;'>"
-                f"{danger_icon}The Bottom Line"
-                "</p>"
-                f"<div style='line-height: 1.6;'>{info['bottom_line']}</div>"
-                "</div>"
+                f"<p><strong>{danger_icon}THE BOTTOM LINE</strong></p>"
+                f"<p>{info['bottom_line']}</p>"
+                "<hr>"
             )
 
-        # Add danger ratings with color-coded backgrounds (current + tomorrow)
+        # Add danger ratings with small icons
         if info['danger_current']:
-            description_parts.append(
-                "<div style='margin: 20px 0;'>"
-                "<p style='font-size: 18px; font-weight: bold; margin: 0 0 15px 0; text-transform: uppercase;'>"
-                "Avalanche Danger"
-                "</p>"
-            )
+            description_parts.append("<p><strong>AVALANCHE DANGER</strong></p>")
 
-            # Build table with current and tomorrow columns
-            # Today column is ~60% width, tomorrow is ~25% width
-            description_parts.append("<table style='border-collapse: separate; border-spacing: 0; width: 100%; max-width: 700px; margin-bottom: 20px;'>")
-
-            # Header row
-            description_parts.append(
-                "<tr>"
-                "<th style='padding: 8px; border: 1px solid #ddd; background-color: #e0e0e0; text-align: left; width: 15%;'></th>"
-                "<th style='padding: 8px; border: 1px solid #ddd; background-color: #e0e0e0; text-align: left; width: 60%;'>Today</th>"
-            )
-            if info['danger_tomorrow']:
-                description_parts.append(
-                    "<th style='padding: 8px; border: 1px solid #ddd; background-color: #e0e0e0; text-align: left; width: 25%;'>Tomorrow</th>"
-                )
-            description_parts.append("</tr>")
-
-            # Above Treeline
+            # Today's danger
             upper_current = info['danger_current'].get('upper')
-            upper_color = danger_level_to_color(upper_current)
+            middle_current = info['danger_current'].get('middle')
+            lower_current = info['danger_current'].get('lower')
+
             description_parts.append(
-                f"<tr>"
-                f"<td style='padding: 12px; background-color: {upper_color}; font-weight: bold; border: 1px solid #ddd;'>Above Treeline</td>"
-                f"<td style='padding: 12px; border: 1px solid #ddd; background-color: #f5f5f5;'>"
-                f"<img src='https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{upper_current}.png' "
-                f"alt='{danger_level_to_text(upper_current)}' height='25' style='vertical-align: middle; margin-right: 8px;' />"
-                f"<strong style='font-size: 16px;'>{danger_level_to_text(upper_current)}</strong>"
-                f"</td>"
+                "<p><strong>Today:</strong><br>"
+                f'<img src="/assets/danger-icons/{upper_current}.png" alt="{danger_level_to_text(upper_current)}" /> '
+                f"Above Treeline: <strong>{danger_level_to_text(upper_current).upper()}</strong><br>"
+                f'<img src="/assets/danger-icons/{middle_current}.png" alt="{danger_level_to_text(middle_current)}" /> '
+                f"Treeline: <strong>{danger_level_to_text(middle_current).upper()}</strong><br>"
+                f'<img src="/assets/danger-icons/{lower_current}.png" alt="{danger_level_to_text(lower_current)}" /> '
+                f"Below Treeline: <strong>{danger_level_to_text(lower_current).upper()}</strong></p>"
             )
+
+            # Tomorrow's danger (if available)
             if info['danger_tomorrow']:
                 upper_tomorrow = info['danger_tomorrow'].get('upper')
-                description_parts.append(
-                    f"<td style='padding: 12px; border: 1px solid #ddd; background-color: #f5f5f5;'>"
-                    f"<img src='https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{upper_tomorrow}.png' "
-                    f"alt='{danger_level_to_text(upper_tomorrow)}' height='25' style='vertical-align: middle; margin-right: 8px;' />"
-                    f"<strong style='font-size: 16px;'>{danger_level_to_text(upper_tomorrow)}</strong>"
-                    f"</td>"
-                )
-            description_parts.append("</tr>")
-
-            # Treeline
-            middle_current = info['danger_current'].get('middle')
-            middle_color = danger_level_to_color(middle_current)
-            description_parts.append(
-                f"<tr>"
-                f"<td style='padding: 12px; background-color: {middle_color}; font-weight: bold; border: 1px solid #ddd;'>Treeline</td>"
-                f"<td style='padding: 12px; border: 1px solid #ddd; background-color: #f5f5f5;'>"
-                f"<img src='https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{middle_current}.png' "
-                f"alt='{danger_level_to_text(middle_current)}' height='25' style='vertical-align: middle; margin-right: 8px;' />"
-                f"<strong style='font-size: 16px;'>{danger_level_to_text(middle_current)}</strong>"
-                f"</td>"
-            )
-            if info['danger_tomorrow']:
                 middle_tomorrow = info['danger_tomorrow'].get('middle')
-                description_parts.append(
-                    f"<td style='padding: 12px; border: 1px solid #ddd; background-color: #f5f5f5;'>"
-                    f"<img src='https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{middle_tomorrow}.png' "
-                    f"alt='{danger_level_to_text(middle_tomorrow)}' height='25' style='vertical-align: middle; margin-right: 8px;' />"
-                    f"<strong style='font-size: 16px;'>{danger_level_to_text(middle_tomorrow)}</strong>"
-                    f"</td>"
-                )
-            description_parts.append("</tr>")
-
-            # Below Treeline
-            lower_current = info['danger_current'].get('lower')
-            lower_color = danger_level_to_color(lower_current)
-            description_parts.append(
-                f"<tr>"
-                f"<td style='padding: 12px; background-color: {lower_color}; font-weight: bold; border: 1px solid #ddd;'>Below Treeline</td>"
-                f"<td style='padding: 12px; border: 1px solid #ddd; background-color: #f5f5f5;'>"
-                f"<img src='https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{lower_current}.png' "
-                f"alt='{danger_level_to_text(lower_current)}' height='25' style='vertical-align: middle; margin-right: 8px;' />"
-                f"<strong style='font-size: 16px;'>{danger_level_to_text(lower_current)}</strong>"
-                f"</td>"
-            )
-            if info['danger_tomorrow']:
                 lower_tomorrow = info['danger_tomorrow'].get('lower')
+
                 description_parts.append(
-                    f"<td style='padding: 12px; border: 1px solid #ddd; background-color: #f5f5f5;'>"
-                    f"<img src='https://nac-web-platforms.s3.us-west-1.amazonaws.com/assets/danger-icons/{lower_tomorrow}.png' "
-                    f"alt='{danger_level_to_text(lower_tomorrow)}' height='25' style='vertical-align: middle; margin-right: 8px;' />"
-                    f"<strong style='font-size: 16px;'>{danger_level_to_text(lower_tomorrow)}</strong>"
-                    f"</td>"
+                    "<p><strong>Tomorrow:</strong><br>"
+                    f'<img src="/assets/danger-icons/{upper_tomorrow}.png" alt="{danger_level_to_text(upper_tomorrow)}" /> '
+                    f"Above Treeline: <strong>{danger_level_to_text(upper_tomorrow).upper()}</strong><br>"
+                    f'<img src="/assets/danger-icons/{middle_tomorrow}.png" alt="{danger_level_to_text(middle_tomorrow)}" /> '
+                    f"Treeline: <strong>{danger_level_to_text(middle_tomorrow).upper()}</strong><br>"
+                    f'<img src="/assets/danger-icons/{lower_tomorrow}.png" alt="{danger_level_to_text(lower_tomorrow)}" /> '
+                    f"Below Treeline: <strong>{danger_level_to_text(lower_tomorrow).upper()}</strong></p>"
                 )
-            description_parts.append("</tr>")
 
-            description_parts.append("</table>")
-            description_parts.append("</div>")
+            description_parts.append("<hr>")
 
-        # Add avalanche problems
+        # Add avalanche problems - simplified for RSS readers
         if info['problems']:
             description_parts.append(
-                "<div style='margin: 20px 0;'>"
-                "<p style='font-size: 18px; font-weight: bold; margin: 0 0 15px 0; text-transform: uppercase;'>"
-                f"Avalanche Problems ({len(info['problems'])})"
-                "</p>"
+                f"<p><strong>AVALANCHE PROBLEMS ({len(info['problems'])})</strong></p>"
             )
             for idx, problem in enumerate(info['problems'], 1):
                 # Format size range properly (e.g., "D1-D2" instead of "D1, 2")
@@ -269,40 +217,97 @@ def preview_entry(center_slug: str, zone_slug: str):
                     size_text = 'Unknown'
 
                 description_parts.append(
-                    f"<div style='margin: 15px 0; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #333;'>"
-                    f"<p style='margin: 0 0 8px 0; font-weight: bold; font-size: 16px; text-transform: uppercase;'>"
-                    f"Problem #{idx}: {problem['name']}"
-                    f"</p>"
-                    f"<p style='margin: 0; font-style: italic; color: #555;'>"
-                    f"Likelihood: <strong>{problem['likelihood'].capitalize()}</strong> | "
-                    f"Size: <strong>{size_text}</strong>"
-                    f"</p>"
-                    f"</div>"
+                    f"<p><strong>#{idx}: {problem['name'].upper()}</strong><br>"
+                    f"Likelihood: {problem['likelihood'].capitalize()} | "
+                    f"Size: {size_text}</p>"
                 )
-            description_parts.append("</div>")
+            description_parts.append("<hr>")
 
-        # Add forecast discussion
+        # Add forecast discussion - simplified
         if info.get('forecast_discussion'):
             description_parts.append(
-                "<div style='margin: 20px 0;'>"
-                "<p style='font-size: 18px; font-weight: bold; margin: 0 0 15px 0; text-transform: uppercase;'>"
-                "Forecast Discussion"
-                "</p>"
-                f"<div style='line-height: 1.6;'>{info['forecast_discussion']}</div>"
-                "</div>"
+                "<p><strong>FORECAST DISCUSSION</strong></p>"
+                f"<p>{info['forecast_discussion']}</p>"
+                "<hr>"
             )
 
-        # Add link to full forecast
+        # Add link to full forecast - simple text link
         if info['url']:
             description_parts.append(
-                f"<p style='margin-top: 25px; padding: 12px; background-color: #e3f2fd; border-radius: 4px; text-align: center;'>"
-                f"<a href='{info['url']}' style='color: #1976d2; text-decoration: none; font-weight: bold; font-size: 16px;'>"
-                f"→ View Full Forecast on Avalanche Center Website"
-                f"</a>"
-                f"</p>"
+                f"<p><a href='{info['url']}'>→ View Full Forecast on Avalanche Center Website</a></p>"
             )
 
         description_html = '\n'.join(description_parts)
+
+        # Determine mode-specific styles
+        if mode == 'rss':
+            # RSS Reader simulation mode - match Feedly's exact behavior
+            import re
+
+            # Strip ALL inline style attributes (Feedly does this)
+            description_html_stripped = re.sub(r'\s*style="[^"]*"', '', description_html)
+
+            # Wrap images in span.PinableImageContainer (Feedly adds this)
+            description_html_stripped = re.sub(
+                r'<img\s+([^>]*?)>',
+                r'<span class="PinableImageContainer"><img \1></span>',
+                description_html_stripped
+            )
+
+            # Replace height attributes on img tags - Feedly ignores these
+            description_html_stripped = re.sub(r'\s*height="[^"]*"', '', description_html_stripped)
+            description_html_stripped = re.sub(r'\s*width="[^"]*"', '', description_html_stripped)
+
+            description_html = description_html_stripped
+
+            body_style = """
+                font-family: system-ui, -apple-system, sans-serif;
+                max-width: 600px;
+                margin: 20px auto;
+                padding: 0 20px;
+                line-height: 1.6;
+                font-size: 15px;
+                background: #fff;
+            """
+            content_style = """
+                padding: 10px;
+                background: #fff;
+            """
+            # Match Feedly's actual rendering behavior
+            extra_css = """
+                /* Simulate Feedly's exact rendering */
+                .content img {
+                    max-width: 580px !important;
+                    height: auto !important;
+                    display: block !important;
+                }
+                .content table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                .content td, .content th {
+                    padding: 8px;
+                    vertical-align: top;
+                }
+                .content strong {
+                    font-weight: 600;
+                }
+            """
+            mode_label = "RSS Reader Simulation Mode (Feedly-exact)"
+            mode_note = "This exactly matches Feedly's behavior: strips all inline styles, removes height/width attributes on images, wraps images in PinableImageContainer spans. The bottom line icon becomes huge because it has no size constraint."
+        else:
+            extra_css = ""
+            # Normal preview mode
+            body_style = """
+                font-family: system-ui, -apple-system, sans-serif;
+                max-width: 800px;
+                margin: 40px auto;
+                padding: 0 20px;
+                line-height: 1.6;
+            """
+            content_style = "border: 1px solid #ddd; padding: 20px; background: #f9f9f9; border-radius: 4px;"
+            mode_label = "Normal Preview Mode"
+            mode_note = "This shows the RSS entry content with full browser rendering. Switch to RSS mode to see how feed readers render it."
 
         # Wrap in a simple HTML page for viewing
         html = f"""
@@ -310,14 +315,11 @@ def preview_entry(center_slug: str, zone_slug: str):
         <html>
         <head>
             <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>RSS Entry Preview - {center_name} - {zone_name}</title>
             <style>
                 body {{
-                    font-family: system-ui, -apple-system, sans-serif;
-                    max-width: 800px;
-                    margin: 40px auto;
-                    padding: 0 20px;
-                    line-height: 1.6;
+                    {body_style}
                 }}
                 .header {{
                     border-bottom: 2px solid #333;
@@ -330,23 +332,41 @@ def preview_entry(center_slug: str, zone_slug: str):
                     margin-bottom: 20px;
                 }}
                 .content {{
-                    border: 1px solid #ddd;
-                    padding: 20px;
-                    background: #f9f9f9;
-                    border-radius: 4px;
+                    {content_style}
                 }}
                 .note {{
                     margin-top: 30px;
                     padding: 15px;
                     background: #fff3cd;
                     border-left: 4px solid #ffc107;
+                    font-size: 0.9em;
                 }}
+                .mode-toggle {{
+                    margin-bottom: 20px;
+                    padding: 10px;
+                    background: #e3f2fd;
+                    border-radius: 4px;
+                    text-align: center;
+                }}
+                .mode-toggle a {{
+                    margin: 0 10px;
+                    text-decoration: none;
+                    font-weight: bold;
+                    color: #1976d2;
+                }}
+                {extra_css}
             </style>
         </head>
         <body>
             <div class="header">
                 <h1>RSS Entry Preview</h1>
                 <h2>{center_name} - {zone_name}</h2>
+            </div>
+
+            <div class="mode-toggle">
+                <strong>{mode_label}</strong><br>
+                <a href="/dev/preview-entry/{center_slug}/{zone_slug}/normal">Normal Mode</a> |
+                <a href="/dev/preview-entry/{center_slug}/{zone_slug}/rss">RSS Reader Mode</a>
             </div>
 
             <div class="metadata">
@@ -356,13 +376,12 @@ def preview_entry(center_slug: str, zone_slug: str):
             </div>
 
             <div class="content">
-                <h3>RSS Entry Content (HTML):</h3>
+                <h3 style="margin-top: 0;">RSS Entry Content:</h3>
                 {description_html}
             </div>
 
             <div class="note">
-                <strong>Note:</strong> This is a development endpoint showing what appears in the RSS feed entry.
-                This content is extracted from the latest downloaded forecast for this zone.
+                <strong>Note:</strong> {mode_note}
             </div>
         </body>
         </html>

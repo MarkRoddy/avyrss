@@ -12,5 +12,8 @@ requests==2.32.3
 # RSS Feed Generation
 feedgen==1.0.0
 
+# Image Processing (for resizing danger icons)
+Pillow==11.0.0
+
 # Templating (included with Flask, but listed for clarity)
 Jinja2==3.1.4
