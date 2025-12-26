@@ -257,9 +257,9 @@ def generate_rss_feed(
                     "<hr>"
                 )
 
-            # Add danger ratings with small icons
+            # Add danger ratings with small icons - ONLY TODAY (tomorrow moved to bottom)
             if info['danger_current']:
-                description_parts.append("<p><strong>AVALANCHE DANGER</strong></p>")
+                description_parts.append("<p><strong>AVALANCHE DANGER - TODAY</strong></p>")
 
                 # Today's danger
                 upper_current = info['danger_current'].get('upper')
@@ -267,7 +267,7 @@ def generate_rss_feed(
                 lower_current = info['danger_current'].get('lower')
 
                 description_parts.append(
-                    "<p><strong>Today:</strong><br>"
+                    "<p>"
                     f'<img src="{base_url}/assets/danger-icons/{upper_current}.png" alt="{danger_level_to_text(upper_current)}" /> '
                     f"Above Treeline: <strong>{danger_level_to_text(upper_current).upper()}</strong><br>"
                     f'<img src="{base_url}/assets/danger-icons/{middle_current}.png" alt="{danger_level_to_text(middle_current)}" /> '
@@ -275,22 +275,6 @@ def generate_rss_feed(
                     f'<img src="{base_url}/assets/danger-icons/{lower_current}.png" alt="{danger_level_to_text(lower_current)}" /> '
                     f"Below Treeline: <strong>{danger_level_to_text(lower_current).upper()}</strong></p>"
                 )
-
-                # Tomorrow's danger (if available)
-                if info['danger_tomorrow']:
-                    upper_tomorrow = info['danger_tomorrow'].get('upper')
-                    middle_tomorrow = info['danger_tomorrow'].get('middle')
-                    lower_tomorrow = info['danger_tomorrow'].get('lower')
-
-                    description_parts.append(
-                        "<p><strong>Tomorrow:</strong><br>"
-                        f'<img src="{base_url}/assets/danger-icons/{upper_tomorrow}.png" alt="{danger_level_to_text(upper_tomorrow)}" /> '
-                        f"Above Treeline: <strong>{danger_level_to_text(upper_tomorrow).upper()}</strong><br>"
-                        f'<img src="{base_url}/assets/danger-icons/{middle_tomorrow}.png" alt="{danger_level_to_text(middle_tomorrow)}" /> '
-                        f"Treeline: <strong>{danger_level_to_text(middle_tomorrow).upper()}</strong><br>"
-                        f'<img src="{base_url}/assets/danger-icons/{lower_tomorrow}.png" alt="{danger_level_to_text(lower_tomorrow)}" /> '
-                        f"Below Treeline: <strong>{danger_level_to_text(lower_tomorrow).upper()}</strong></p>"
-                    )
 
                 description_parts.append("<hr>")
 
@@ -323,6 +307,26 @@ def generate_rss_feed(
                     f"<p>{info['forecast_discussion']}</p>"
                     "<hr>"
                 )
+
+            # Add tomorrow's forecast at the bottom (less prominent)
+            if info['danger_tomorrow']:
+                description_parts.append("<p><strong>TOMORROW'S FORECAST</strong></p>")
+
+                upper_tomorrow = info['danger_tomorrow'].get('upper')
+                middle_tomorrow = info['danger_tomorrow'].get('middle')
+                lower_tomorrow = info['danger_tomorrow'].get('lower')
+
+                description_parts.append(
+                    "<p>"
+                    f'<img src="{base_url}/assets/danger-icons/{upper_tomorrow}.png" alt="{danger_level_to_text(upper_tomorrow)}" /> '
+                    f"Above Treeline: <strong>{danger_level_to_text(upper_tomorrow).upper()}</strong><br>"
+                    f'<img src="{base_url}/assets/danger-icons/{middle_tomorrow}.png" alt="{danger_level_to_text(middle_tomorrow)}" /> '
+                    f"Treeline: <strong>{danger_level_to_text(middle_tomorrow).upper()}</strong><br>"
+                    f'<img src="{base_url}/assets/danger-icons/{lower_tomorrow}.png" alt="{danger_level_to_text(lower_tomorrow)}" /> '
+                    f"Below Treeline: <strong>{danger_level_to_text(lower_tomorrow).upper()}</strong></p>"
+                )
+
+                description_parts.append("<hr>")
 
             # Add link to full forecast - simple text link
             if info['url']:
