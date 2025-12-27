@@ -64,9 +64,16 @@ def save_forecast(
     Returns:
         Path where the forecast was saved
     """
-    # Use the request time as the forecast date
-    request_time = datetime.fromisoformat(forecast_data['request_time'].rstrip('Z'))
-    file_path = get_forecast_path(center_slug, zone_slug, request_time, base_dir)
+    # Use the published time from the forecast, fall back to request time if not available
+    forecast = forecast_data.get('forecast', {})
+    published_time = forecast.get('published_time')
+
+    if published_time:
+        date = datetime.fromisoformat(published_time.rstrip('Z'))
+    else:
+        date = datetime.fromisoformat(forecast_data['request_time'].rstrip('Z'))
+
+    file_path = get_forecast_path(center_slug, zone_slug, date, base_dir)
 
     # Create directory structure
     file_path.parent.mkdir(parents=True, exist_ok=True)
