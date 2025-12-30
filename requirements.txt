@@ -17,3 +17,7 @@ Pillow==11.0.0
 
 # Templating (included with Flask, but listed for clarity)
 Jinja2==3.1.4
+
+# Storage abstraction (supports local and S3)
+fsspec==2024.10.0
+s3fs==2024.10.0

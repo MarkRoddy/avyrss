@@ -5,9 +5,9 @@ Forecast downloading and storage management.
 import os
 import json
 from datetime import datetime
-from pathlib import Path
 from typing import Dict, List, Tuple, Optional
 import logging
+import fsspec
 
 from app.avalanche import AvalancheConfig, fetch_forecast
 
@@ -18,12 +18,12 @@ def get_forecast_path(
     center_slug: str,
     zone_slug: str,
     date: datetime,
-    base_dir: str = "forecasts"
-) -> Path:
+    base_path: str = "file://forecasts"
+) -> str:
     """
     Generate the file path for storing a forecast.
 
-    Structure: forecasts/{center_slug}/{zone_slug}/{YYYY}/{YYYY-MM-DD}.json
+    Structure: {base_path}/{center_slug}/{zone_slug}/{YYYY}/{YYYY-MM-DD}.json
 
     This structure makes it easy to:
     - List all forecasts for a zone
@@ -34,15 +34,18 @@ def get_forecast_path(
         center_slug: Avalanche center slug
         zone_slug: Zone slug
         date: Date of the forecast
-        base_dir: Base directory for forecasts
+        base_path: Base path/URL for forecasts (e.g., "file://forecasts" or "s3://bucket/forecasts")
 
     Returns:
-        Path object for the forecast file
+        Full path/URL string for the forecast file
     """
     year = date.strftime("%Y")
     date_str = date.strftime("%Y-%m-%d")
 
-    path = Path(base_dir) / center_slug / zone_slug / year / f"{date_str}.json"
+    # Normalize base_path (remove trailing slash if present)
+    base_path = base_path.rstrip('/')
+
+    path = f"{base_path}/{center_slug}/{zone_slug}/{year}/{date_str}.json"
     return path
 
 
@@ -50,19 +53,19 @@ def save_forecast(
     center_slug: str,
     zone_slug: str,
     forecast_data: Dict,
-    base_dir: str = "forecasts"
-) -> Path:
+    base_path: str = "file://forecasts"
+) -> str:
     """
-    Save a forecast to disk.
+    Save a forecast to storage (local filesystem or S3).
 
     Args:
         center_slug: Avalanche center slug
         zone_slug: Zone slug
         forecast_data: Forecast data (including request_time, duration, forecast)
-        base_dir: Base directory for forecasts
+        base_path: Base path/URL for forecasts (e.g., "file://forecasts" or "s3://bucket/forecasts")
 
     Returns:
-        Path where the forecast was saved
+        Path/URL where the forecast was saved
     """
     # Use the published time from the forecast, fall back to request time if not available
     forecast = forecast_data.get('forecast', {})
@@ -73,13 +76,19 @@ def save_forecast(
     else:
         date = datetime.fromisoformat(forecast_data['request_time'].rstrip('Z'))
 
-    file_path = get_forecast_path(center_slug, zone_slug, date, base_dir)
+    file_path = get_forecast_path(center_slug, zone_slug, date, base_path)
+
+    # Get filesystem instance
+    fs, _ = fsspec.core.url_to_fs(file_path)
 
     # Create directory structure
-    file_path.parent.mkdir(parents=True, exist_ok=True)
+    year = date.strftime("%Y")
+    base_path_normalized = base_path.rstrip('/')
+    dir_path = f"{base_path_normalized}/{center_slug}/{zone_slug}/{year}"
+    fs.makedirs(dir_path, exist_ok=True)
 
     # Write forecast to file
-    with open(file_path, 'w') as f:
+    with fs.open(file_path, 'w') as f:
         json.dump(forecast_data, f, indent=2)
 
     logger.info(f"Saved forecast to {file_path}")
@@ -90,8 +99,8 @@ def get_recent_forecasts(
     center_slug: str,
     zone_slug: str,
     limit: int = 10,
-    base_dir: str = "forecasts"
-) -> List[Tuple[Path, Dict]]:
+    base_path: str = "file://forecasts"
+) -> List[Tuple[str, Dict]]:
     """
     Get the N most recent forecasts for a zone.
 
@@ -99,25 +108,38 @@ def get_recent_forecasts(
         center_slug: Avalanche center slug
         zone_slug: Zone slug
         limit: Maximum number of forecasts to return
-        base_dir: Base directory for forecasts
+        base_path: Base path/URL for forecasts (e.g., "file://forecasts" or "s3://bucket/forecasts")
 
     Returns:
         List of (file_path, forecast_data) tuples, newest first
     """
-    zone_dir = Path(base_dir) / center_slug / zone_slug
+    base_path_normalized = base_path.rstrip('/')
+    zone_path = f"{base_path_normalized}/{center_slug}/{zone_slug}"
 
-    if not zone_dir.exists():
-        logger.warning(f"No forecasts found for {center_slug}/{zone_slug}")
+    # Get filesystem instance
+    fs, _ = fsspec.core.url_to_fs(zone_path)
+
+    # Check if zone directory exists
+    try:
+        if not fs.exists(zone_path):
+            logger.warning(f"No forecasts found for {center_slug}/{zone_slug}")
+            return []
+    except Exception as e:
+        logger.warning(f"Error checking path {zone_path}: {e}")
         return []
 
     # Find all JSON files recursively
-    forecast_files = sorted(zone_dir.glob("**/*.json"), reverse=True)
+    try:
+        forecast_files = sorted(fs.glob(f"{zone_path}/**/*.json"), reverse=True)
+    except Exception as e:
+        logger.error(f"Error globbing forecasts for {center_slug}/{zone_slug}: {e}")
+        return []
 
     # Load and return the most recent ones
     results = []
     for file_path in forecast_files[:limit]:
         try:
-            with open(file_path, 'r') as f:
+            with fs.open(file_path, 'r') as f:
                 forecast_data = json.load(f)
             results.append((file_path, forecast_data))
         except (json.JSONDecodeError, IOError) as e:
@@ -131,8 +153,8 @@ def download_forecast_for_zone(
     center_slug: str,
     zone_slug: str,
     config: AvalancheConfig,
-    base_dir: str = "forecasts"
-) -> Tuple[bool, str, Optional[Path]]:
+    base_path: str = "file://forecasts"
+) -> Tuple[bool, str, Optional[str]]:
     """
     Download and save forecast for a single zone.
 
@@ -140,7 +162,7 @@ def download_forecast_for_zone(
         center_slug: Avalanche center slug
         zone_slug: Zone slug
         config: AvalancheConfig instance
-        base_dir: Base directory for forecasts
+        base_path: Base path/URL for forecasts (e.g., "file://forecasts" or "s3://bucket/forecasts")
 
     Returns:
         Tuple of (success, message, file_path)
@@ -160,22 +182,22 @@ def download_forecast_for_zone(
     if "error" in forecast_data:
         return False, f"Error fetching forecast: {forecast_data['error']}", None
 
-    # Save to disk
-    file_path = save_forecast(center_slug, zone_slug, forecast_data, base_dir)
+    # Save to storage
+    file_path = save_forecast(center_slug, zone_slug, forecast_data, base_path)
 
     return True, f"Successfully downloaded forecast", file_path
 
 
 def download_all_forecasts(
     config: AvalancheConfig,
-    base_dir: str = "forecasts"
+    base_path: str = "file://forecasts"
 ) -> Dict[str, int]:
     """
     Download forecasts for all known zones.
 
     Args:
         config: AvalancheConfig instance
-        base_dir: Base directory for forecasts
+        base_path: Base path/URL for forecasts (e.g., "file://forecasts" or "s3://bucket/forecasts")
 
     Returns:
         Dictionary with counts: {'success': N, 'failed': M, 'total': T}
@@ -187,7 +209,7 @@ def download_all_forecasts(
 
     for center_slug, zone_slug, zone_id, center_id in all_zones:
         success, message, file_path = download_forecast_for_zone(
-            center_slug, zone_slug, config, base_dir
+            center_slug, zone_slug, config, base_path
         )
 
         if success:

@@ -165,7 +165,7 @@ def generate_rss_feed(
     zone_slug: str,
     config: AvalancheConfig,
     base_url: str = "http://localhost:5000",
-    forecasts_dir: str = "forecasts",
+    forecasts_path: str = "file://forecasts",
     limit: int = 10
 ) -> str:
     """
@@ -176,7 +176,7 @@ def generate_rss_feed(
         zone_slug: Zone slug
         config: AvalancheConfig instance
         base_url: Base URL for the RSS feed
-        forecasts_dir: Directory containing forecasts
+        forecasts_path: Path/URL for forecasts storage (e.g., "file://forecasts" or "s3://bucket/forecasts")
         limit: Number of recent forecasts to include
 
     Returns:
@@ -208,7 +208,7 @@ def generate_rss_feed(
 
     # Get recent forecasts
     recent_forecasts = get_recent_forecasts(
-        center_slug, zone_slug, limit=limit, base_dir=forecasts_dir
+        center_slug, zone_slug, limit=limit, base_path=forecasts_path
     )
 
     if not recent_forecasts:
@@ -383,7 +383,7 @@ def generate_feed_for_zone(
     zone_slug: str,
     config: AvalancheConfig,
     base_url: str = "http://localhost:5000",
-    forecasts_dir: str = "forecasts",
+    forecasts_path: str = "file://forecasts",
     feeds_dir: str = "feeds"
 ) -> Path:
     """
@@ -394,7 +394,7 @@ def generate_feed_for_zone(
         zone_slug: Zone slug
         config: AvalancheConfig instance
         base_url: Base URL for the RSS feed
-        forecasts_dir: Directory containing forecasts
+        forecasts_path: Path/URL for forecasts storage (e.g., "file://forecasts" or "s3://bucket/forecasts")
         feeds_dir: Directory to save feeds
 
     Returns:
@@ -405,7 +405,7 @@ def generate_feed_for_zone(
     rss_content = generate_rss_feed(
         center_slug, zone_slug, config,
         base_url=base_url,
-        forecasts_dir=forecasts_dir
+        forecasts_path=forecasts_path
     )
 
     file_path = save_rss_feed(center_slug, zone_slug, rss_content, feeds_dir)
@@ -416,7 +416,7 @@ def generate_feed_for_zone(
 def generate_all_feeds(
     config: AvalancheConfig,
     base_url: str = "http://localhost:5000",
-    forecasts_dir: str = "forecasts",
+    forecasts_path: str = "file://forecasts",
     feeds_dir: str = "feeds"
 ) -> Dict[str, int]:
     """
@@ -425,7 +425,7 @@ def generate_all_feeds(
     Args:
         config: AvalancheConfig instance
         base_url: Base URL for the RSS feeds
-        forecasts_dir: Directory containing forecasts
+        forecasts_path: Path/URL for forecasts storage (e.g., "file://forecasts" or "s3://bucket/forecasts")
         feeds_dir: Directory to save feeds
 
     Returns:
@@ -441,7 +441,7 @@ def generate_all_feeds(
             generate_feed_for_zone(
                 center_slug, zone_slug, config,
                 base_url=base_url,
-                forecasts_dir=forecasts_dir,
+                forecasts_path=forecasts_path,
                 feeds_dir=feeds_dir
             )
             results['success'] += 1

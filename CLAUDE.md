@@ -112,6 +112,45 @@ python3 app/main.py
 - Structure: `avalanche_centers -> {center-slug} -> zones -> [{name, slug, id}]`
 - Maps human-readable slugs to avalanche.org zone IDs
 
+### Storage Backends
+
+Forecast storage supports both local filesystem and S3 via **fsspec** (filesystem abstraction library):
+
+**Configuration:**
+Set `FORECAST_STORAGE_PATH` environment variable (or use `--forecasts-path` CLI argument):
+
+```bash
+# Local filesystem (default)
+FORECAST_STORAGE_PATH=file://forecasts
+
+# S3 storage
+FORECAST_STORAGE_PATH=s3://my-bucket/forecasts
+```
+
+**S3 Configuration:**
+When using S3, you'll need AWS credentials configured either via:
+- Environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`
+- AWS CLI configuration (`~/.aws/credentials`)
+- IAM roles (if running on EC2/ECS)
+
+**Dependencies:**
+- `fsspec` - unified filesystem interface
+- `s3fs` - S3 backend for fsspec (included in requirements.txt)
+
+**Implementation:**
+All storage operations in `app/forecasts.py` use fsspec, which automatically routes to the correct backend based on the URL protocol (`file://` or `s3://`). The code doesn't need to know which backend is being used.
+
+**Migration:**
+Use `bin/migrate-to-s3.py` to migrate existing forecast data from local storage to S3:
+
+```bash
+# Preview migration
+python3 bin/migrate-to-s3.py --source forecasts --dest s3://my-bucket/forecasts --dry-run
+
+# Perform migration
+python3 bin/migrate-to-s3.py --source forecasts --dest s3://my-bucket/forecasts
+```
+
 ### Directory Structure
 
 ```

@@ -78,6 +78,41 @@ crontab -e
 0 6 * * * /path/to/avyrss/bin/update-feeds.sh /var/www >> /var/log/avyrss-update.log 2>&1
 ```
 
+### `migrate-to-s3.py`
+
+Migration tool to copy forecast files from local filesystem to S3 (or between any fsspec-supported storage backends).
+
+**Usage:**
+```bash
+# Dry run to see what would be copied
+python3 bin/migrate-to-s3.py --source forecasts --dest s3://my-bucket/forecasts --dry-run
+
+# Actual migration from local to S3
+python3 bin/migrate-to-s3.py --source forecasts --dest s3://my-bucket/forecasts
+
+# Can use explicit file:// protocol
+python3 bin/migrate-to-s3.py --source file://forecasts --dest s3://my-bucket/forecasts
+
+# Migrate between S3 buckets
+python3 bin/migrate-to-s3.py --source s3://old-bucket/forecasts --dest s3://new-bucket/forecasts
+
+# Verbose output
+python3 bin/migrate-to-s3.py --source forecasts --dest s3://my-bucket/forecasts --verbose
+```
+
+**Features:**
+- Preserves directory structure
+- Only migrates `.json` files
+- Overwrites existing files at destination
+- Supports dry-run mode to preview operations
+- Works with any fsspec-supported backend (local, S3, GCS, Azure, etc.)
+
+**AWS Configuration:**
+When migrating to/from S3, ensure AWS credentials are configured:
+- Environment variables: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`
+- AWS CLI configuration: `~/.aws/credentials`
+- IAM roles (if running on EC2/ECS)
+
 ### `generate_centers_config.py`
 
 One-time script to generate the `avalanche_centers.yaml` configuration file.

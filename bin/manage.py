@@ -38,14 +38,14 @@ def cmd_full_update(args):
 
     # Download forecasts
     logger.info("Step 1/2: Downloading forecasts for all zones...")
-    download_results = download_all_forecasts(config, base_dir=args.forecasts_dir)
+    download_results = download_all_forecasts(config, base_path=args.forecasts_path)
 
     # Generate feeds
     logger.info("Step 2/2: Generating RSS feeds for all zones...")
     feed_results = generate_all_feeds(
         config,
         base_url=args.base_url,
-        forecasts_dir=args.forecasts_dir,
+        forecasts_path=args.forecasts_path,
         feeds_dir=args.feeds_dir
     )
 
@@ -68,7 +68,7 @@ def cmd_download_forecast(args):
         args.center,
         args.zone,
         config,
-        base_dir=args.forecasts_dir
+        base_path=args.forecasts_path
     )
 
     if success:
@@ -91,7 +91,7 @@ def cmd_generate_feed(args):
             args.zone,
             config,
             base_url=args.base_url,
-            forecasts_dir=args.forecasts_dir,
+            forecasts_path=args.forecasts_path,
             feeds_dir=args.feeds_dir
         )
         print(f"✓ RSS feed generated successfully")
@@ -110,7 +110,7 @@ def cmd_generate_all_feeds(args):
     feed_results = generate_all_feeds(
         config,
         base_url=args.base_url,
-        forecasts_dir=args.forecasts_dir,
+        forecasts_path=args.forecasts_path,
         feeds_dir=args.feeds_dir
     )
 
@@ -183,9 +183,10 @@ Examples:
         help='Path to avalanche centers config file (default: avalanche_centers.yaml)'
     )
     parser.add_argument(
-        '--forecasts-dir',
-        default='forecasts',
-        help='Directory for storing forecasts (default: forecasts)'
+        '--forecasts-path',
+        default=os.getenv('FORECAST_STORAGE_PATH', 'file://forecasts'),
+        help='Path/URL for storing forecasts (default: file://forecasts or FORECAST_STORAGE_PATH env var). '
+             'Examples: "file://forecasts" for local, "s3://bucket/forecasts" for S3'
     )
     parser.add_argument(
         '--feeds-dir',

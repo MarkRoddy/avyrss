@@ -22,7 +22,7 @@ PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 # Configuration - resolve paths relative to project root
 FEEDS_DIR = PROJECT_ROOT / os.getenv('FEEDS_DIR', 'feeds')
 INDEX_HTML_PATH = PROJECT_ROOT / os.getenv('INDEX_HTML_PATH', 'index.html')
-FORECASTS_DIR = PROJECT_ROOT / os.getenv('FORECASTS_DIR', 'forecasts')
+FORECASTS_PATH = os.getenv('FORECAST_STORAGE_PATH', 'file://forecasts')
 ASSETS_DIR = PROJECT_ROOT / 'assets'
 CONFIG_PATH = PROJECT_ROOT / 'avalanche_centers.yaml'
 
@@ -117,7 +117,7 @@ def preview_entry(center_slug: str, zone_slug: str, mode: str = 'normal'):
 
         # Get the most recent forecast
         recent_forecasts = get_recent_forecasts(
-            center_slug, zone_slug, limit=1, base_dir=str(FORECASTS_DIR)
+            center_slug, zone_slug, limit=1, base_path=FORECASTS_PATH
         )
 
         if not recent_forecasts:
