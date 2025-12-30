@@ -124,6 +124,11 @@ if [ ! -d "venv" ]; then
 else
     log_info "Activating virtual environment..."
     source venv/bin/activate
+
+    # Update dependencies in case requirements.txt changed
+    log_info "Updating dependencies..."
+    pip install --upgrade pip --quiet
+    pip install -r requirements.txt --quiet
 fi
 
 # Verify we're in the right place
